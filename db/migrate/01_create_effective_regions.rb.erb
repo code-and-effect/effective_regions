@@ -1,0 +1,20 @@
+class CreateEffectiveRegions < ActiveRecord::Migration
+  def self.up
+    create_table <%= @regions_table_name %> do |t|
+      t.string :regionable_type
+      t.integer :regionable_id
+
+      t.string :title
+      t.text :content
+      t.text :snippets
+
+      t.datetime :updated_at
+      t.datetime :created_at
+    end
+  end
+
+  def self.down
+    drop_table <%= @regions_table_name %>
+  end
+
+end
