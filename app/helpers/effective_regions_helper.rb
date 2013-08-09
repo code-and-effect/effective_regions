@@ -1,0 +1,3 @@
+module EffectiveRegionsHelper
+
+end
