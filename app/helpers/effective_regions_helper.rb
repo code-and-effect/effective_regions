@@ -1,21 +1,16 @@
 module EffectiveRegionsHelper
   def effective_region(*args)
     options = args.extract_options!
-
     block_given? ? mercury_region(args, options) { yield } : mercury_region(args, options)
   end
 
   def simple_effective_region(*args)
-    options = args.extract_options!
-    options.merge!(:type => :simple)
-
+    (options = args.extract_options!).merge!(:type => :simple)
     block_given? ? mercury_region(args, options) { yield } : mercury_region(args, options)
   end
 
   def snippet_effective_region(*args)
-    options = args.extract_options!
-    options.merge!(:type => :snippets)
-
+    (options = args.extract_options!).merge!(:type => :snippets)
     block_given? ? mercury_region(args, options) { yield } : mercury_region(args, options)
   end
 
@@ -34,19 +29,19 @@ module EffectiveRegionsHelper
       opts = {:id => [obj.class.name.gsub('::', '').downcase, obj.id, title].join('_'), 'data-mercury' => type, 'data-title' => title, 'data-regionable_type' => obj.class.name, 'data-regionable_id' => obj.id}.merge(options)
 
       region = obj.regions.to_a.find { |region| region.title == title }
-      snip_content = region.try(:content)
+      content = region.try(:content)
     else
       opts = {:id => title, 'data-mercury' => type, 'data-title' => title}.merge(options)
       region = Effective::Region.where(:title => title, :regionable_type => nil, :regionable_id => nil).first
-      snip_content = region.try(:content)
+      content = region.try(:content)
     end
 
     if request.fullpath.include?('mercury_frame') # If we need the editable div
       content_tag(tag, opts) do
-        snip_content.present? ? expand_snippets(editable(snip_content, region), region, options).html_safe : ((capture(&block).strip.html_safe) if block_given?)
+        content.present? ? expand_snippets(editable(content, region), region, options).html_safe : ((capture(&block).strip.html_safe) if block_given?)
       end
     else
-      snip_content.present? ? expand_snippets(snip_content, region, options).html_safe : ((capture(&block).strip.html_safe) if block_given?)
+      content.present? ? expand_snippets(content, region, options).html_safe : ((capture(&block).strip.html_safe) if block_given?)
     end
   end
 
@@ -55,7 +50,7 @@ module EffectiveRegionsHelper
   def editable(html, region)
     html.scan(/\[snippet_\d+\/\d+\]/).flatten.each do |snippet|  # Find [snippet_1/1]
       id = snippet.scan(/\d+/).try(:first).to_i
-      html.gsub!(snippet, "<div data-snippet='snippet_#{id}' class='#{(region.snippets["snippet_#{id}"][:name] rescue '')}-snippet'>[snippet_#{id}/1]</div>")
+      html.gsub!(snippet, "<div data-snippet='snippet_#{id}' class='#{(region.snippets["snippet_#{id}"][:name] rescue '')}_snippet'>[snippet_#{id}/1]</div>")
     end
     html
   end

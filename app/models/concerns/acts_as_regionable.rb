@@ -3,7 +3,7 @@ module ActsAsRegionable
 
   module ActiveRecord
     def acts_as_regionable(*options)
-      @acts_as_regionable = options || []
+      @acts_as_regionable_opts = options || []
       include ::ActsAsRegionable
     end
   end
