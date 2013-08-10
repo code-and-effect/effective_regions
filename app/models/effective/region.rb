@@ -16,6 +16,8 @@ module Effective
 
     serialize :snippets, Hash
 
+    scope :global, -> { where('regionable_type IS NULL').where('regionable_id IS NULL') }
+
     def snippets
       self[:snippets] || HashWithIndifferentAccess.new()
     end

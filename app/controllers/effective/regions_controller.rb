@@ -4,19 +4,11 @@ module Effective
     respond_to :html
     layout false
 
-    def edit(options = {}, &block)
+    def edit
       render :text => '', :layout => 'effective_mercury'
-      # if params[:mercury_frame]
-      #   render
-      # elsif resource.snippets.present?
-      #   render(:file => 'effective/mercury/_load_snippets', :layout => 'effective_mercury')
-      # else
-      #   render(:text => '', :layout => 'effective_mercury')
-      # end
     end
 
-    def update(options = {}, &block)
-      #region_params = params.require('content').permit!()  # Strong Parameters
+    def update
       region_params = params[:content]
 
       Effective::Region.transaction do
@@ -24,13 +16,15 @@ module Effective
           if vals[:data].present?
             region = Effective::Region.where(:title => vals[:data][:title], :regionable_type => vals[:data][:regionable_type], :regionable_id => vals[:data][:regionable_id]).first_or_initialize
           else
-            region = Effective::Region.where(:title => title, :regionable_type => nil, :regionable_id => nil).first_or_initialize
+            region = Effective::Region.global.where(:title => title).first_or_initialize
           end
 
-          region.content = cleanup(vals[:value])
-          (vals[:snippets] || []).each { |snippet, vals| region.snippets[snippet] = vals }
+          if region
+            region.content = cleanup(vals[:value])
+            (vals[:snippets] || []).each { |snippet, vals| region.snippets[snippet] = vals }
 
-          region.save!
+            region.save!
+          end
         end
 
         render :text => '', :status => 200
@@ -38,6 +32,22 @@ module Effective
       end
 
       render :text => '', :status => :unprocessable_entity
+    end
+
+    def list_snippets
+      snippets = {}
+
+      params[:snippets].each do |key, values|
+        if values[:regionable_type].present?
+          region = Effective::Region.where(values).first
+        else
+          region = Effective::Region.global.where(values).first
+        end
+
+        snippets[key] = region.snippets[key] if (region.snippets[key].present? rescue false)
+      end
+
+      render :json => snippets, :status => 200
     end
 
     private
