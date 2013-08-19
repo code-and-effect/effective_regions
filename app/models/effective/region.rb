@@ -14,7 +14,7 @@ module Effective
       timestamps
     end
 
-    serialize :snippets, Hash
+    serialize :snippets, HashWithIndifferentAccess
 
     scope :global, -> { where('regionable_type IS NULL').where('regionable_id IS NULL') }
 
