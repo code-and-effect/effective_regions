@@ -28,7 +28,7 @@ module EffectiveRegionsHelper
 
       opts = {:id => [obj.class.name.gsub('::', '').downcase, obj.id, title].join('_'), 'data-mercury' => type, 'data-title' => title, 'data-regionable_type' => obj.class.name, 'data-regionable_id' => obj.id}.merge(options)
 
-      region = obj.regions.to_a.find { |region| region.title == title }
+      region = obj.regions.all.to_a.find { |region| region.title == title }
       content = region.try(:content)
     else
       opts = {:id => title, 'data-mercury' => type, 'data-title' => title}.merge(options)
