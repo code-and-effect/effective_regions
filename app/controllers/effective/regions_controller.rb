@@ -9,7 +9,7 @@ module Effective
     end
 
     def update
-      region_params = params[:content]
+      region_params = assign_unique_snippet_ids(params[:content])
 
       Effective::Region.transaction do
         region_params.each do |title, vals|
@@ -19,12 +19,10 @@ module Effective
             region = Effective::Region.global.where(:title => title).first_or_initialize
           end
 
-          if region
-            region.content = cleanup(vals[:value])
-            (vals[:snippets] || []).each { |snippet, vals| region.snippets[snippet] = vals }
-
-            region.save!
-          end
+          region.content = cleanup(vals[:value])
+          region.snippets.clear
+          (vals[:snippets] || []).each { |snippet, vals| region.snippets[snippet] = vals }
+          region.save!
         end
 
         render :text => '', :status => 200
@@ -66,6 +64,17 @@ module Effective
         str.chomp!('<br>') # Mercury editor likes to put in extra BRs
         str.strip!
         str
+      end
+    end
+
+    def assign_unique_snippet_ids(params)
+      id = Time.now.to_i
+
+      params.each do |_, region|
+        region[:snippets].keys.each do |key|
+          region[:snippets]["snippet_#{(id += 1)}"] = region[:snippets].delete(key)
+          region[:value].gsub!(key.to_s, "snippet_#{id}")
+        end
       end
     end
 
