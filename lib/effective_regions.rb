@@ -10,7 +10,7 @@ module EffectiveRegions
   end
 
   def self.authorized?(controller, action, resource)
-    raise ActiveResource::UnauthorizedAccess.new('') unless (controller || self).instance_exec(controller, action, resource, &EffectiveRegions.authorization_method)
+    raise Effective::AccessDenied() unless (controller || self).instance_exec(controller, action, resource, &EffectiveRegions.authorization_method)
     true
   end
 

@@ -11,7 +11,7 @@ module ActsAsRegionable
   included do
     has_many :regions, :as => :regionable, :class_name => "Effective::Region", :dependent => :delete_all
 
-    default_scope includes(:regions)
+    default_scope -> { includes(:regions) }
   end
 
   module ClassMethods

@@ -1,6 +1,5 @@
 module Effective
-  class RegionsController < ::ApplicationController
-    skip_authorization_check if defined?(CanCan)
+  class RegionsController < ApplicationController
     respond_to :html
     layout false
 
@@ -68,7 +67,7 @@ module Effective
     end
 
     def assign_unique_snippet_ids(params)
-      id = Time.now.to_i
+      id = Time.zone.now.to_i
 
       params.each do |_, region|
         region[:snippets].keys.each do |key|
