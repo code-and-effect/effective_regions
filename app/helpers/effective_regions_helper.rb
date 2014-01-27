@@ -72,7 +72,7 @@ module EffectiveRegionsHelper
     klass = "Effective::Snippets::#{snippet['name'].try(:classify)}".safe_constantize
     return code unless klass
 
-    render klass.new(snippet['options'], options).render_params
+    render :partial => klass.new(snippet['options']), :locals => options
   end
 
 end

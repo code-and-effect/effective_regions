@@ -18,14 +18,8 @@ module Effective
         (@attributes || []).each { |k, v| self.send("#{k}=", v) if respond_to?("#{k}=") }
       end
 
-      # def to_partial_path
-      #   "/effective/snippets/#{snippet_class_name}/#{snippet_class_name}"
-      # end
-
-      # # These are render options. For a controller to call render on.
-      def render_params(render_options = {})
-        partial_path = "/effective/snippets/#{snippet_class_name}/#{snippet_class_name}"
-        {:partial => partial_path, :locals => {snippet_class_name => self}.merge(options).merge(render_options)}
+      def to_partial_path
+        "effective/snippets/#{snippet_class_name}/#{snippet_class_name}"
       end
 
       def page_form(controller)
