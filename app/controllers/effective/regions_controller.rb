@@ -4,7 +4,7 @@ module Effective
     layout false
 
     def edit
-      EffectiveRegions.authorized?(self, :create, Effective::Region.new())
+      EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
 
       render :text => '', :layout => 'effective_mercury'
     end
@@ -14,13 +14,19 @@ module Effective
 
       Effective::Region.transaction do
         region_params.each do |title, vals|
-          if vals[:data].present?
+
+          if vals.key?(:data) && vals[:data].key?(:regionable_type) && vals[:data].key?(:regionable_id)
             region = Effective::Region.where(:title => vals[:data][:title], :regionable_type => vals[:data][:regionable_type], :regionable_id => vals[:data][:regionable_id]).first_or_initialize
+
+            if region.persisted? == false
+              region.regionable = (vals[:data][:regionable_type].safe_constantize).find(vals[:data][:regionable_id]) rescue nil
+            end
+
+            EffectiveRegions.authorized?(self, :update, region.regionable) # can I update the regionable object?
           else
             region = Effective::Region.global.where(:title => title).first_or_initialize
+            EffectiveRegions.authorized?(self, :update, region) # can I update the global region?
           end
-
-          EffectiveRegions.authorized?(self, :update, region)
 
           region.content = cleanup(vals[:value])
           region.snippets.clear
@@ -37,6 +43,8 @@ module Effective
 
 
     def list_snippets
+      EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
+      
       snippets = {}
 
       (params[:snippets] || {}).each do |key, values|

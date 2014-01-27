@@ -22,21 +22,25 @@ module EffectiveRegionsHelper
 
     obj = args.first
     title = args.last.to_s
+    editting = request.fullpath.include?('mercury_frame')
 
     if obj.kind_of?(ActiveRecord::Base)
       raise StandardError.new('Object passed to page_region helper must declare act_as_regionable') unless obj.respond_to?(:acts_as_regionable)
 
       opts = {:id => [obj.class.name.gsub('::', '').downcase, obj.id, title].join('_'), 'data-mercury' => type, 'data-title' => title, 'data-regionable_type' => obj.class.name, 'data-regionable_id' => obj.id}.merge(options)
 
-      region = obj.regions.all.to_a.find { |region| region.title == title }
+      region = obj.regions.to_a.find { |region| region.title == title }
       content = region.try(:content)
+      can_edit = (EffectiveRegions.authorized?(controller, :update, obj) rescue false) if editting
     else
       opts = {:id => title, 'data-mercury' => type, 'data-title' => title}.merge(options)
-      region = Effective::Region.where(:title => title, :regionable_type => nil, :regionable_id => nil).first
+
+      region = Effective::Region.global.where(:title => title).first_or_initialize
       content = region.try(:content)
+      can_edit = (EffectiveRegions.authorized?(controller, :update, region) rescue false) if editting
     end
 
-    if request.fullpath.include?('mercury_frame') # If we need the editable div
+    if editting && can_edit # If we need the editable div
       content_tag(tag, opts) do
         content.present? ? expand_snippets(editable(content, region), region, options).html_safe : ((capture(&block).strip.html_safe) if block_given?)
       end
@@ -72,7 +76,8 @@ module EffectiveRegionsHelper
     klass = "Effective::Snippets::#{snippet['name'].try(:classify)}".safe_constantize
     return code unless klass
 
-    render :partial => klass.new(snippet['options']), :locals => options
+    snippet = klass.new(snippet['options'])
+    render :partial => snippet.to_partial_path, :object => snippet, :locals => options
   end
 
 end

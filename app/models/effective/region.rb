@@ -19,6 +19,11 @@ module Effective
     def snippets
       self[:snippets] || HashWithIndifferentAccess.new()
     end
+
+    def global?
+      self.regionable_id == nil && self.regionable_type == nil
+    end
+
   end
 end
 

@@ -58,10 +58,6 @@ module Effective
       def snippet_has_options?
         true
       end
-
-      def snippet_filter
-        snippet_name
-      end
     end
   end
 end
