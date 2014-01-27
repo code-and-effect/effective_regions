@@ -3,7 +3,7 @@ require 'virtus'
 module Effective
   module Snippets
     class Snippet
-      include ::Virtus
+      include Virtus.model
 
       attr_accessor :attributes
       attr_accessor :options
@@ -18,7 +18,11 @@ module Effective
         (@attributes || []).each { |k, v| self.send("#{k}=", v) if respond_to?("#{k}=") }
       end
 
-      # These are render options. For a controller to call render on.
+      # def to_partial_path
+      #   "/effective/snippets/#{snippet_class_name}/#{snippet_class_name}"
+      # end
+
+      # # These are render options. For a controller to call render on.
       def render_params(render_options = {})
         partial_path = "/effective/snippets/#{snippet_class_name}/#{snippet_class_name}"
         {:partial => partial_path, :locals => {snippet_class_name => self}.merge(options).merge(render_options)}

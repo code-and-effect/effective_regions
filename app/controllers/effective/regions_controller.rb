@@ -4,6 +4,8 @@ module Effective
     layout false
 
     def edit
+      EffectiveRegions.authorized?(self, :create, Effective::Region.new())
+
       render :text => '', :layout => 'effective_mercury'
     end
 
@@ -18,6 +20,8 @@ module Effective
             region = Effective::Region.global.where(:title => title).first_or_initialize
           end
 
+          EffectiveRegions.authorized?(self, :update, region)
+
           region.content = cleanup(vals[:value])
           region.snippets.clear
           (vals[:snippets] || []).each { |snippet, vals| region.snippets[snippet] = vals }
@@ -31,10 +35,11 @@ module Effective
       render :text => '', :status => :unprocessable_entity
     end
 
+
     def list_snippets
       snippets = {}
 
-      params[:snippets].each do |key, values|
+      (params[:snippets] || {}).each do |key, values|
         if values[:regionable_type].present?
           region = Effective::Region.where(values).first
         else
@@ -49,6 +54,7 @@ module Effective
 
     private
 
+    # TODO: Also remove any trailing tags that have no content in them....<p></p><p></p>
     def cleanup(str)
       if str
         # Remove the following markup
@@ -70,8 +76,8 @@ module Effective
       id = Time.zone.now.to_i
 
       params.each do |_, region|
-        region[:snippets].keys.each do |key|
-          region[:snippets]["snippet_#{(id += 1)}"] = region[:snippets].delete(key)
+        (region[:snippets] || {}).keys.each do |key|
+          region[:snippets]["snippet_#{id}"] = region[:snippets].delete(key)
           region[:value].gsub!(key.to_s, "snippet_#{id}")
         end
       end
