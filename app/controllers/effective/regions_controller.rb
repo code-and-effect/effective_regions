@@ -41,7 +41,6 @@ module Effective
       render :text => '', :status => :unprocessable_entity
     end
 
-
     def list_snippets
       EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
       
