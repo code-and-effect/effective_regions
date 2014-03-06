@@ -29,6 +29,7 @@ module Effective
           end
 
           region.content = cleanup(vals[:value])
+
           region.snippets.clear
           (vals[:snippets] || []).each { |snippet, vals| region.snippets[snippet] = vals }
           region.save!
@@ -68,7 +69,7 @@ module Effective
         #<div data-snippet="snippet_0" class="text_field_tag-snippet">[snippet_0/1]</div>
         # And replace with [snippet_0/1]
         # So we don't have a wrapping div in our final content
-        str.scan(/(<div.+?>)(\[snippet_\d+\/\d+\])(<\/div>)/).each do |match|
+        str.scan(/(<div.+?>)(\[snippet_\d+\])(<\/div>)/).each do |match|
           str.gsub!(match.join(), match[1]) if match.length == 3
         end
 
@@ -85,7 +86,16 @@ module Effective
       params.each do |_, region|
         (region[:snippets] || {}).keys.each do |key|
           region[:snippets]["snippet_#{id}"] = region[:snippets].delete(key)
-          region[:value].gsub!(key.to_s, "snippet_#{id}")
+
+          region[:value].scan(/snippet_\d+(\/\d+)/).each do |match|  # Replace any snippet_0/1 with snippet_0
+            region[:value].gsub!(match[0], '') if match.length == 1
+          end
+
+          region[:value].gsub!('"' + key + '"', '"' + "snippet_#{id}" + '"')
+          region[:value].gsub!('[' + key + ']', '[' + "snippet_#{id}" + ']')
+          region[:value].gsub!("'" + key + "'", "'" + "snippet_#{id}" + "'")
+
+          id += 1
         end
       end
     end

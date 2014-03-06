@@ -52,15 +52,16 @@ module EffectiveRegionsHelper
   # We're finding [snippet_0/1] and expanding to
   # <div data-snippet="snippet_0" class="text_field_tag-snippet">[snippet_0/1]</div>
   def editable(html, region)
-    html.scan(/\[snippet_\d+\/\d+\]/).flatten.each do |snippet|  # Find [snippet_1/1]
+    html.scan(/\[snippet_\d+\]/).flatten.each do |snippet|  # Find [snippet_1]
       id = snippet.scan(/\d+/).try(:first).to_i
-      html.gsub!(snippet, "<div data-snippet='snippet_#{id}' class='#{(region.snippets["snippet_#{id}"][:name] rescue '')}_snippet'>[snippet_#{id}/1]</div>")
+      html.gsub!(snippet, "<div data-snippet='snippet_#{id}' class='#{(region.snippets["snippet_#{id}"][:name] rescue '')}_snippet'>[snippet_#{id}]</div>")
     end
     html
   end
 
   def expand_snippets(html, region, options)
-    snippets = html.scan(/\[snippet_\d+\/\d+\]/).flatten  # find [snippet_1/1] and insert snippet content
+    snippets = html.scan(/\[snippet_\d+\]/).flatten  # find [snippet_1] and insert snippet content
+
     snippets.each { |snippet| html.gsub!(snippet, snippet_content(snippet, region, options)) }
     html
   end
@@ -68,7 +69,7 @@ module EffectiveRegionsHelper
   def snippet_content(code, region, options = {})
     return code unless region.present?
 
-    key = code.scan(/\[(snippet_\d+)\/\d+\]/).flatten.first # captures [(snippet_1)/1]
+    key = code.scan(/\[(snippet_\d+)\]/).flatten.first # captures [(snippet_1)]
 
     snippet = region.snippets[key] || {}
     return code unless snippet['name'].present?
