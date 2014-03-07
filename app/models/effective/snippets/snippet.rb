@@ -10,7 +10,6 @@ module Effective
 
       attribute :id, String # This will be snippet_12345
       attribute :region, Effective::Region # The region Object
-      attribute :name, String # This ends up being the class name, it's set by EffectiveMercury on its update
 
       def initialize(attributes = {}, options = {})
         @attributes ||= attributes
@@ -19,15 +18,23 @@ module Effective
         (@attributes || []).each { |k, v| self.send("#{k}=", v) if respond_to?("#{k}=") }
       end
 
+      def id
+        super.presence || "snippet_#{object_id}"
+      end
+
       def to_partial_path
-        "effective/snippets/#{snippet_class_name}/#{snippet_class_name}"
+        "effective/snippets/#{class_name}/#{class_name}"
+      end
+
+      def to_editable_div
+        "<div data-snippet='#{id}' class='#{class_name}_snippet'>[#{id}]</div>"
+      end
+
+      def class_name
+        @class_name ||= self.class.name.demodulize.underscore.to_sym
       end
 
       ### The following methods are used for the Mercury Editor snippets pane.
-      def snippet_class_name
-        @snippet_class_name ||= self.class.name.demodulize.underscore.to_sym
-      end
-
       def snippet_name
         self.name.demodulize
       end

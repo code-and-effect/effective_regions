@@ -18,7 +18,6 @@ module EffectiveRegionsHelper
 
   def mercury_region(args, options = {}, &block)
     type = (options.delete(:type) || :full).to_s
-    tag = options.delete(:tag) || :div
 
     obj = args.first
     title = args.last.to_s
@@ -41,7 +40,7 @@ module EffectiveRegionsHelper
     end
 
     if editting && can_edit # If we need the editable div
-      content_tag(tag, opts) do
+      content_tag(:div, opts) do
         content.present? ? expand_snippets(editable(content, region), region, options).html_safe : ((capture(&block).strip.html_safe) if block_given?)
       end
     else
@@ -49,32 +48,30 @@ module EffectiveRegionsHelper
     end
   end
 
-  # We're finding [snippet_0/1] and expanding to
-  # <div data-snippet="snippet_0" class="text_field_tag-snippet">[snippet_0/1]</div>
+  # We're finding [snippet_0] and expanding to
+  # <div data-snippet="snippet_0" class="text_field_tag-snippet">[snippet_0]</div>
   def editable(html, region)
-    html.scan(/\[snippet_\d+\]/).flatten.each do |snippet|  # Find [snippet_1]
-      id = snippet.scan(/\d+/).try(:first).to_i
-      html.gsub!(snippet, "<div data-snippet='snippet_#{id}' class='#{(region.snippets["snippet_#{id}"][:name] rescue '')}_snippet'>[snippet_#{id}]</div>")
+    html.scan(/\[(snippet_\d+)\]/).flatten.each do |id|  # Finds snippet_1
+      snippet = region.snippet_objects.find { |snippet| snippet.id == id }
+      html.gsub!("[#{id}]", snippet.to_editable_div) if snippet
     end
     html
   end
 
   def expand_snippets(html, region, options)
-    codes = html.scan(/\[snippet_\d+\]/).flatten  # find [snippet_1] and insert snippet content
-
-    codes.each { |code| html.gsub!(code, snippet_content(code, region, options)) }
+    html.scan(/\[(snippet_\d+)\]/).flatten.each do |id| # find snippet_1 and insert snippet content
+      content = snippet_content(id, region, options)
+      html.gsub!("[#{id}]", content) if content
+    end
     html
   end
 
-  def snippet_content(code, region, options = {})
-    return code unless region.present?
+  def snippet_content(id, region, options = {})
+    snippet = (region.try(:snippet_objects) || []).find { |snippet| snippet.id == id }
 
-    key = code.scan(/\[(snippet_\d+)\]/).flatten.first # captures [(snippet_1)]
-    snippet = region.snippet_objects.find { |snippet| snippet.id == key }
-
-    return code unless snippet
-
-    render :partial => snippet.to_partial_path, :object => snippet, :locals => options
+    if snippet
+      render :partial => snippet.to_partial_path, :object => snippet, :locals => options
+    end
   end
 
 end

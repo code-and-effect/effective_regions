@@ -1,9 +1,10 @@
 .mercury-snippet-panel
   .filter
     %input{:class => 'filter focusable', :type => 'text'}
+  %p Drag-and-Drop into any hightlighted page area
   %ul
     - EffectiveRegions.snippets.each do |snippet|
-      %li{'data-filter' => snippet.snippet_name || snippet.snippet_class_name}
-        %img{:src => snippet.snippet_image || '/assets/effective_mercury/default-snippet.png', :alt => snippet.snippet_name, 'data-snippet' => snippet.snippet_class_name, 'data-options' => snippet.snippet_has_options?.to_s }
+      %li{'data-filter' => snippet.snippet_name || snippet.class_name}
+        %img{:src => snippet.snippet_image || '/assets/effective_mercury/default-snippet.png', :alt => snippet.snippet_name, 'data-snippet' => snippet.class_name, 'data-options' => snippet.snippet_has_options?.to_s }
         %h4= snippet.snippet_name
         .description= snippet.snippet_description || 'No Description'
