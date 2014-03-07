@@ -20,6 +20,20 @@ module Effective
       self[:snippets] || HashWithIndifferentAccess.new()
     end
 
+    # Hash of the Snippets objectified
+    #
+    # Returns a Hash of {'snippet_1' => CurrentUserInfo.new(snippets[:key]['options'])}
+    def snippet_objects
+      @snippet_objects ||= HashWithIndifferentAccess.new().tap do |retval|
+        snippets.each do |key, snippet| # key will be snippet_1, snippet is another Hash representing the Snippet object
+          if snippet['name']
+            klass = "Effective::Snippets::#{snippet['name'].classify}".safe_constantize
+            retval[key] = klass.new(snippet['options']) if klass
+          end
+        end
+      end
+    end
+
     def global?
       self.regionable_id == nil && self.regionable_type == nil
     end

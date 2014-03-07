@@ -9,7 +9,7 @@ module ActsAsRegionable
   end
 
   included do
-    has_many :regions, :as => :regionable, :class_name => "Effective::Region", :dependent => :delete_all
+    has_many :regions, :as => :regionable, :class_name => "Effective::Region", :dependent => :delete_all, :autosave => true
 
     default_scope -> { includes(:regions) }
   end

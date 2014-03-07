@@ -60,9 +60,9 @@ module EffectiveRegionsHelper
   end
 
   def expand_snippets(html, region, options)
-    snippets = html.scan(/\[snippet_\d+\]/).flatten  # find [snippet_1] and insert snippet content
+    codes = html.scan(/\[snippet_\d+\]/).flatten  # find [snippet_1] and insert snippet content
 
-    snippets.each { |snippet| html.gsub!(snippet, snippet_content(snippet, region, options)) }
+    codes.each { |code| html.gsub!(code, snippet_content(code, region, options)) }
     html
   end
 
@@ -70,14 +70,10 @@ module EffectiveRegionsHelper
     return code unless region.present?
 
     key = code.scan(/\[(snippet_\d+)\]/).flatten.first # captures [(snippet_1)]
+    snippet = region.snippet_objects[key]
 
-    snippet = region.snippets[key] || {}
-    return code unless snippet['name'].present?
+    return code unless snippet
 
-    klass = "Effective::Snippets::#{snippet['name'].try(:classify)}".safe_constantize
-    return code unless klass
-
-    snippet = klass.new(snippet['options'])
     render :partial => snippet.to_partial_path, :object => snippet, :locals => options
   end
 
