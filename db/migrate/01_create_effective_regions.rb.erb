@@ -11,6 +11,9 @@ class CreateEffectiveRegions < ActiveRecord::Migration
       t.datetime :updated_at
       t.datetime :created_at
     end
+
+    add_index :<%= @regions_table_name %>, [:regionable_type, :regionable_id]
+    add_index <%= @regions_table_name %>, :regionable_id
   end
 
   def self.down
