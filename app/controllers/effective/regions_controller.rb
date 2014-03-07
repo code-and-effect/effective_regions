@@ -94,8 +94,8 @@ module Effective
         (region[:snippets] || {}).keys.each do |key|
           region[:snippets]["snippet_#{id}"] = region[:snippets].delete(key)
 
-          region[:value].scan(/snippet_\d+(\/\d+)/).each do |match|  # Replace any snippet_0/1 with snippet_0
-            region[:value].gsub!(match[0], '') if match.length == 1
+          region[:value].scan(/(snippet_\d+)(\/\d+)/).each do |match|  # Replace any snippet_0/1 with snippet_0
+            region[:value].gsub!(match.join(), match[0]) if match.length == 2
           end
 
           region[:value].gsub!('"' + key + '"', '"' + "snippet_#{id}" + '"')
