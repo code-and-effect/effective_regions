@@ -12,35 +12,35 @@ module Effective
     def update
       region_params = assign_unique_snippet_ids(params[:content])
 
-      to_save = [] # ActiveRecord object that declare acts_as_regionable or Effective::Region objects (also ActiveRecords)
-
-      region_params.each do |title, vals|
-        if vals.key?(:data) && vals[:data].key?(:regionable_type) && vals[:data].key?(:regionable_id)
-          regionable = (vals[:data][:regionable_type].safe_constantize).find(vals[:data][:regionable_id]) rescue nil
-
-          if regionable
-            EffectiveRegions.authorized?(self, :update, regionable) # can I update the regionable object?
-
-            region = regionable.regions.find { |region| region.title == vals[:data][:title] } 
-            region ||= regionable.regions.build(:title => vals[:data][:title])
-
-            to_save << regionable
-          end
-        else
-          region = Effective::Region.global.where(:title => title).first_or_initialize
-          EffectiveRegions.authorized?(self, :update, region) # can I update the global region?
-
-          to_save << region
-        end
-
-        region.content = cleanup(vals[:value])
-
-        region.snippets.clear
-        (vals[:snippets] || []).each { |snippet, vals| region.snippets[snippet] = vals }
-      end
-
       Effective::Region.transaction do
-        to_save.uniq.each { |obj| obj.save! } # We're relying on has_many :autosave => true to save our region objects
+        region_params.each do |title, vals|
+          to_save = nil  # Which object, the regionable, or the region (if global) to save
+
+          if vals.key?(:data) && vals[:data].key?(:regionable_type) && vals[:data].key?(:regionable_id)
+            regionable = (vals[:data][:regionable_type].safe_constantize).find(vals[:data][:regionable_id]) rescue nil
+
+            if regionable
+              EffectiveRegions.authorized?(self, :update, regionable) # can I update the regionable object?
+
+              region = regionable.regions.find { |region| region.title == vals[:data][:title] } 
+              region ||= regionable.regions.build(:title => vals[:data][:title])
+
+              to_save = regionable
+            end
+          else
+            region = Effective::Region.global.where(:title => title).first_or_initialize
+            EffectiveRegions.authorized?(self, :update, region) # can I update the global region?
+
+            to_save = region
+          end
+
+          region.content = cleanup(vals[:value])
+
+          region.snippets.clear
+          (vals[:snippets] || []).each { |snippet, vals| region.snippets[snippet] = vals }
+
+          to_save.save!
+        end
 
         render :text => '', :status => 200
         return
