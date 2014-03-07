@@ -21,5 +21,9 @@ module ActsAsRegionable
     true
   end
 
+  def snippet_objects
+    regions.map { |region| region.snippet_objects }.flatten
+  end
+
 end
 

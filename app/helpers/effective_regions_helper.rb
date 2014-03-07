@@ -25,11 +25,11 @@ module EffectiveRegionsHelper
     editting = request.fullpath.include?('mercury_frame')
 
     if obj.kind_of?(ActiveRecord::Base)
-      raise StandardError.new('Object passed to page_region helper must declare act_as_regionable') unless obj.respond_to?(:acts_as_regionable)
+      raise StandardError.new('Object passed to effective_region helper must declare act_as_regionable') unless obj.respond_to?(:acts_as_regionable)
 
       opts = {:id => [obj.class.name.gsub('::', '').downcase, obj.id, title].join('_'), 'data-mercury' => type, 'data-title' => title, 'data-regionable_type' => obj.class.name, 'data-regionable_id' => obj.id}.merge(options)
 
-      region = obj.regions.to_a.find { |region| region.title == title }
+      region = obj.regions.find { |region| region.title == title }
       content = region.try(:content)
       can_edit = (EffectiveRegions.authorized?(controller, :update, obj) rescue false) if editting
     else
@@ -70,7 +70,7 @@ module EffectiveRegionsHelper
     return code unless region.present?
 
     key = code.scan(/\[(snippet_\d+)\]/).flatten.first # captures [(snippet_1)]
-    snippet = region.snippet_objects[key]
+    snippet = region.snippet_objects.find { |snippet| snippet.id == key }
 
     return code unless snippet
 

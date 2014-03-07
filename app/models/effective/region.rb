@@ -24,14 +24,12 @@ module Effective
     #
     # Returns a Hash of {'snippet_1' => CurrentUserInfo.new(snippets[:key]['options'])}
     def snippet_objects
-      @snippet_objects ||= HashWithIndifferentAccess.new().tap do |retval|
-        snippets.each do |key, snippet| # key will be snippet_1, snippet is another Hash representing the Snippet object
-          if snippet['name']
-            klass = "Effective::Snippets::#{snippet['name'].classify}".safe_constantize
-            retval[key] = klass.new(snippet['options']) if klass
-          end
+      @snippet_objects ||= snippets.map do |key, snippet|
+        if snippet['name']
+          klass = "Effective::Snippets::#{snippet['name'].classify}".safe_constantize
+          klass.new((snippet['options'] || {}).merge!(:region => self, :id => key)) if klass
         end
-      end
+      end.compact
     end
 
     def global?

@@ -3,10 +3,6 @@ module Effective
     class CurrentUserInfo < Snippet
       attribute :method, String
 
-      def value_type
-        String
-      end
-
       def snippet_name
         'Current User Info'
       end

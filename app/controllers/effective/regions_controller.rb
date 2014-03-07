@@ -105,6 +105,8 @@ module Effective
           id += 1
         end
       end
+
+      params
     end
 
   end

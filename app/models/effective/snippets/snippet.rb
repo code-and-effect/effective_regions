@@ -8,8 +8,9 @@ module Effective
       attr_accessor :attributes
       attr_accessor :options
 
-      attribute :name, String
-      attribute :required, Boolean
+      attribute :id, String # This will be snippet_12345
+      attribute :region, Effective::Region # The region Object
+      attribute :name, String # This ends up being the class name, it's set by EffectiveMercury on its update
 
       def initialize(attributes = {}, options = {})
         @attributes ||= attributes
@@ -20,24 +21,6 @@ module Effective
 
       def to_partial_path
         "effective/snippets/#{snippet_class_name}/#{snippet_class_name}"
-      end
-
-      def page_form(controller)
-        # form = nil
-        # controller.view_context.simple_form_for Effective::PageForm.new([self]), :url => '/', :action => :show do |f| form = f end
-        # form
-      end
-
-      def value_type
-        String
-      end
-
-      def required?
-        self[:required] || false
-      end
-
-      def required_html_class
-        required? ? 'required' : 'optional'
       end
 
       ### The following methods are used for the Mercury Editor snippets pane.
