@@ -1,38 +1,38 @@
 module EffectiveRegionsHelper
   def effective_region(*args)
     options = args.extract_options!
-    block_given? ? mercury_region(args, options) { yield } : mercury_region(args, options)
+    block_given? ? ckeditor_region(args, options) { yield } : ckeditor_region(args, options)
   end
 
   def simple_effective_region(*args)
     (options = args.extract_options!).merge!(:type => :simple)
-    block_given? ? mercury_region(args, options) { yield } : mercury_region(args, options)
+    block_given? ? ckeditor_region(args, options) { yield } : ckeditor_region(args, options)
   end
 
   def snippet_effective_region(*args)
     (options = args.extract_options!).merge!(:type => :snippets)
-    block_given? ? mercury_region(args, options) { yield } : mercury_region(args, options)
+    block_given? ? ckeditor_region(args, options) { yield } : ckeditor_region(args, options)
   end
 
   private
 
-  def mercury_region(args, options = {}, &block)
+  def ckeditor_region(args, options = {}, &block)
     type = (options.delete(:type) || :full).to_s
 
     obj = args.first
-    title = args.last.to_s
-    editting = request.fullpath.include?('mercury_frame')
+    title = args.last.to_s.parameterize
+    editting = request.fullpath.include?('?edit=true')
 
     if obj.kind_of?(ActiveRecord::Base)
       raise StandardError.new('Object passed to effective_region helper must declare act_as_regionable') unless obj.respond_to?(:acts_as_regionable)
 
-      opts = {:id => [obj.class.name.gsub('::', '').downcase, obj.id, title].join('_'), 'data-mercury' => type, 'data-title' => title, 'data-regionable_type' => obj.class.name, 'data-regionable_id' => obj.id}.merge(options)
+      opts = {:id => [model_name_from_record_or_class(obj).param_key(), obj.id, title].join('_'), 'data-effective-ckeditor' => type, :contenteditable => true}.merge(options)
 
       region = obj.regions.find { |region| region.title == title }
       content = region.try(:content)
       can_edit = (EffectiveRegions.authorized?(controller, :update, obj) rescue false) if editting
     else
-      opts = {:id => title, 'data-mercury' => type, 'data-title' => title}.merge(options)
+      opts = {:id => title.to_s.parameterize, 'data-effective-ckeditor' => type, :contenteditable => true}.merge(options)
 
       region = Effective::Region.global.where(:title => title).first_or_initialize
       content = region.try(:content)
@@ -73,5 +73,6 @@ module EffectiveRegionsHelper
       render :partial => snippet.to_partial_path, :object => snippet, :locals => options
     end
   end
+
 
 end

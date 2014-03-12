@@ -6,27 +6,24 @@ module Effective
     def edit
       EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
 
-      render :text => '', :layout => 'effective_mercury'
+      # TODO: turn this into a cookie or something better.
+      redirect_to request.url.gsub('/edit', '') + '?edit=true'
     end
 
     def update
-      region_params = assign_unique_snippet_ids(params[:content])
-
       Effective::Region.transaction do
-        region_params.each do |title, vals|
+        region_params.each do |key, vals| # article_section_2_title => {:content => '<p></p>'}
           to_save = nil  # Which object, the regionable, or the region (if global) to save
 
-          if vals.key?(:data) && vals[:data].key?(:regionable_type) && vals[:data].key?(:regionable_id)
-            regionable = (vals[:data][:regionable_type].safe_constantize).find(vals[:data][:regionable_id]) rescue nil
+          regionable, title = find_regionable(key)
 
-            if regionable
-              EffectiveRegions.authorized?(self, :update, regionable) # can I update the regionable object?
+          if regionable
+            EffectiveRegions.authorized?(self, :update, regionable) # can I update the regionable object?
 
-              region = regionable.regions.find { |region| region.title == vals[:data][:title] } 
-              region ||= regionable.regions.build(:title => vals[:data][:title])
+            region = regionable.regions.find { |region| region.title == title } 
+            region ||= regionable.regions.build(:title => title) 
 
-              to_save = regionable
-            end
+            to_save = regionable
           else
             region = Effective::Region.global.where(:title => title).first_or_initialize
             EffectiveRegions.authorized?(self, :update, region) # can I update the global region?
@@ -34,7 +31,7 @@ module Effective
             to_save = region
           end
 
-          region.content = cleanup(vals[:value])
+          region.content = cleanup(vals[:content])
 
           region.snippets.clear
           (vals[:snippets] || []).each { |snippet, vals| region.snippets[snippet] = vals }
@@ -46,28 +43,22 @@ module Effective
         return
       end
 
-      render :text => '', :status => :unprocessable_entity
+      render :text => 'error', :status => :unprocessable_entity
+
     end
 
-    def list_snippets
-      EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
-      
-      snippets = {}
+    protected
 
-      (params[:snippets] || {}).each do |key, values|
-        if values[:regionable_type].present?
-          region = Effective::Region.where(values).first
-        else
-          region = Effective::Region.global.where(values).first
-        end
+    def find_regionable(key)
+      regionable = nil
+      title = nil
 
-        snippets[key] = region.snippets[key] if (region.snippets[key].present? rescue false)
+      if(class_name, id, title = key.scan(/(\w+)_(\d)_(\w+)/).flatten).present?
+        regionable = (class_name.classify.safe_constantize).find(id) rescue nil
       end
 
-      render :json => snippets, :status => 200
+      return regionable, (title || key)
     end
-
-    private
 
     # TODO: Also remove any trailing tags that have no content in them....<p></p><p></p>
     def cleanup(str)
@@ -81,34 +72,19 @@ module Effective
         end
 
         str.gsub!("\n", '')
-        str.chomp!('<br>') # Mercury editor likes to put in extra BRs
+        #str.chomp!('<br>')
         str.strip!
         str
       end
     end
 
-    def assign_unique_snippet_ids(params)
-      id = Time.zone.now.to_i
-
-      params.each do |_, region|
-        (region[:snippets] || {}).keys.each do |key|
-          region[:snippets]["snippet_#{id}"] = region[:snippets].delete(key)
-
-          region[:value].scan(/(snippet_\d+)(\/\d+)/).each do |match|  # Replace any snippet_0/1 with snippet_0
-            region[:value].gsub!(match.join(), match[0]) if match.length == 2
-          end
-
-          region[:value].gsub!('"' + key + '"', '"' + "snippet_#{id}" + '"')
-          region[:value].gsub!('[' + key + ']', '[' + "snippet_#{id}" + ']')
-          region[:value].gsub!("'" + key + "'", "'" + "snippet_#{id}" + "'")
-
-          id += 1
-        end
+    def region_params
+      begin
+        params.require(:effective_regions).permit!
+      rescue => e
+        params[:effective_regions]
       end
-
-      params
     end
-
   end
 end
 
