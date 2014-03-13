@@ -1,6 +1,6 @@
 module Effective
   class RegionsController < ApplicationController
-    respond_to :html
+    respond_to :html, :json
     layout false
 
     def edit
@@ -44,7 +44,18 @@ module Effective
       end
 
       render :text => 'error', :status => :unprocessable_entity
+    end
 
+    def snippets
+      EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
+
+      retval = {}
+
+      EffectiveRegions.snippets.each do |snippet|
+        retval[snippet.class_name] = {:template => "<p>#{snippet.class_name}</p>", :options => []}
+      end
+
+      render :json => retval
     end
 
     protected
