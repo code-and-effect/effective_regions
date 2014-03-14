@@ -2,7 +2,8 @@ EffectiveRegions::Engine.routes.draw do
 
   scope :module => 'effective' do
     scope '/effective_regions' do
-      get 'snippets' => 'regions#snippets', :as => :snippets
+      get 'snippets' => 'regions#snippets', :as => :snippets # Index of all Snippets
+      get 'snippet' => 'regions#snippet', :as => :snippet # Get a Snippet based on passed values
     end
 
     scope '/edit' do  # Changing this, means change editorUrlRegEx in mercury.min.js
