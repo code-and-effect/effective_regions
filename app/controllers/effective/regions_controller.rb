@@ -62,14 +62,11 @@ module Effective
       render :json => retval
     end
 
-    def snippet # This is a GET.  CKEDITOR passes us data, we need to render the editable snippet
+    def snippet # This is a GET.  CKEDITOR passes us data, we need to render the non-editable content
       klass = "Effective::Snippets::#{region_params[:name].try(:classify)}".safe_constantize
 
       if klass.present?
         @snippet = klass.new(region_params[:data])
-
-        Rails.logger.info @snippet.inspect
-
         render :partial => @snippet.to_partial_path, :object => @snippet, :locals => {:snippet_preview => true}
       else
         render :text => "Missing class Effective::Snippets::#{region_params[:name].try(:classify)}"
