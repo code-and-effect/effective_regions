@@ -52,7 +52,11 @@ module Effective
       retval = {}
 
       EffectiveRegions.snippets.each do |snippet|
-        retval[snippet.class_name] = {:template => "<p>#{snippet.class_name}</p>", :options => []}
+        retval[snippet.class_name] = {
+          :template => snippet.to_editable_div,
+          :dialog_url => snippet.snippet_dialog_url,
+          :options => []
+        }
       end
 
       render :json => retval

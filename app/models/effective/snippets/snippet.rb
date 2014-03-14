@@ -34,20 +34,27 @@ module Effective
         @class_name ||= self.class.name.demodulize.underscore.to_sym
       end
 
-      ### The following methods are used for the Mercury Editor snippets pane.
-      def snippet_name
-        self.name.demodulize
+      ### The following methods are used for the CKEditor widget creation.
+
+      # Either a string, or false if there are no options.
+      def snippet_dialog_url
+        "/assets/effective/snippets/#{class_name}.js"
       end
 
-      def snippet_description
-      end
 
-      def snippet_image
-      end
+      # ### The following methods are used for the Mercury Editor snippets pane.
+      # def snippet_name
+      #   self.name.demodulize
+      # end
 
-      def snippet_has_options?
-        true
-      end
+
+
+      # def snippet_description
+      # end
+
+      # def snippet_image
+      # end
+
     end
   end
 end
