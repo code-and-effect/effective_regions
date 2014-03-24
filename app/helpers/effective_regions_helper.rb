@@ -49,7 +49,7 @@ module EffectiveRegionsHelper
   end
 
   # We're finding [snippet_0] and expanding to
-  # <div data-snippet="snippet_0" class="text_field_tag-snippet">[snippet_0]</div>
+  # <div class="text_field_tag_snippet">[snippet_0]</div>
   def editable(html, region)
     html.scan(/\[(snippet_\d+)\]/).flatten.each do |id|  # Finds snippet_1
       snippet = region.snippet_objects.find { |snippet| snippet.id == id }

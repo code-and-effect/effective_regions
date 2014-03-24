@@ -27,7 +27,8 @@ module Effective
       end
 
       def to_editable_div
-        "<div data-snippet='#{id}' class='#{class_name}_snippet'>[#{id}]</div>"
+        #{}"<div data-snippet='#{id}' class='#{class_name}_snippet'>[#{id}]</div>"
+        "<div class='#{class_name}_snippet'>[#{id}]</div>"
       end
 
       def class_name
@@ -40,20 +41,6 @@ module Effective
       def snippet_dialog_url
         "/assets/effective/snippets/#{class_name}.js"
       end
-
-
-      # ### The following methods are used for the Mercury Editor snippets pane.
-      # def snippet_name
-      #   self.name.demodulize
-      # end
-
-
-
-      # def snippet_description
-      # end
-
-      # def snippet_image
-      # end
 
     end
   end

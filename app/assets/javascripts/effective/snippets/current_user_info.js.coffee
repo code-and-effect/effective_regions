@@ -4,7 +4,7 @@ CKEDITOR.dialog.add 'current_user_info', (editor) ->
   minHeight: 100,
   contents: [
     {
-      id: 'info',
+      id: 'current_user_info',
       elements: [
         {
           id: 'method',
