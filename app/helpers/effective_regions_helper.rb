@@ -14,6 +14,10 @@ module EffectiveRegionsHelper
     block_given? ? ckeditor_region(args, options) { yield } : ckeditor_region(args, options)
   end
 
+  def editable_snippet_div(snippet)
+    content_tag(:div, "[#{snippet.id}]", :class => "#{snippet.class_name}_snippet", :data => {'snippet-data' => snippet.data}).html_safe
+  end
+
   private
 
   def ckeditor_region(args, options = {}, &block)
@@ -51,15 +55,15 @@ module EffectiveRegionsHelper
   # We're finding [snippet_0] and expanding to
   # <div class="text_field_tag_snippet">[snippet_0]</div>
   def editable(html, region)
-    html.scan(/\[(snippet_\d+)\]/).flatten.each do |id|  # Finds snippet_1
+    html.scan(/\[(snippet_\d+)\]/).flatten.uniq.each do |id|  # Finds snippet_1
       snippet = region.snippet_objects.find { |snippet| snippet.id == id }
-      html.gsub!("[#{id}]", snippet.to_editable_div) if snippet
+      html.gsub!("[#{id}]", editable_snippet_div(snippet)) if snippet
     end
     html
   end
 
   def expand_snippets(html, region, options)
-    html.scan(/\[(snippet_\d+)\]/).flatten.each do |id| # find snippet_1 and insert snippet content
+    html.scan(/\[(snippet_\d+)\]/).flatten.uniq.each do |id| # find snippet_1 and insert snippet content
       content = snippet_content(id, region, options)
       html.gsub!("[#{id}]", content) if content
     end
@@ -73,6 +77,5 @@ module EffectiveRegionsHelper
       render :partial => snippet.to_partial_path, :object => snippet, :locals => options
     end
   end
-
 
 end

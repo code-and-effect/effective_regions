@@ -1,5 +1,8 @@
 module Effective
   class RegionsController < ApplicationController
+    include EffectiveRegionsHelper
+    include ActionView::Helpers::TagHelper
+
     respond_to :html, :json
     layout false
 
@@ -11,6 +14,9 @@ module Effective
     end
 
     def update
+      render :text => '', :status => 200
+      return
+
       Effective::Region.transaction do
         region_params.each do |key, vals| # article_section_2_title => {:content => '<p></p>'}
           to_save = nil  # Which object, the regionable, or the region (if global) to save
@@ -20,8 +26,8 @@ module Effective
           if regionable
             EffectiveRegions.authorized?(self, :update, regionable) # can I update the regionable object?
 
-            region = regionable.regions.find { |region| region.title == title } 
-            region ||= regionable.regions.build(:title => title) 
+            region = regionable.regions.find { |region| region.title == title }
+            region ||= regionable.regions.build(:title => title)
 
             to_save = regionable
           else
@@ -50,13 +56,8 @@ module Effective
       EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
 
       retval = {}
-
       EffectiveRegions.snippets.each do |snippet|
-        retval[snippet.class_name] = {
-          :template => snippet.to_editable_div,
-          :dialog_url => snippet.snippet_dialog_url,
-          :options => []
-        }
+        retval[snippet.class_name] = { :dialog_url => snippet.snippet_dialog_url }
       end
 
       render :json => retval
@@ -72,6 +73,23 @@ module Effective
         render :text => "Missing class Effective::Snippets::#{region_params[:name].try(:classify)}"
       end
     end
+
+    # def snippet # This is a GET.  CKEDITOR passes us data, we need to render the editable content
+    #   klass = "Effective::Snippets::#{region_params[:name].try(:classify)}".safe_constantize
+
+    #   if klass.present?
+    #     @snippet = klass.new(region_params[:data])
+
+    #     html = editable_snippet_div(@snippet)
+    #     html.gsub!("[#{@snippet.id}]", render_to_string(:partial => @snippet.to_partial_path, :object => @snippet, :locals => {:snippet_preview => true}))
+
+    #     Rails.logger.info html
+
+    #     render :text => html
+    #   else
+    #     render :text => "Missing class Effective::Snippets::#{region_params[:name].try(:classify)}"
+    #   end
+    # end
 
     protected
 

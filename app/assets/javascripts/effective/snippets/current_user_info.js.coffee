@@ -16,10 +16,8 @@ CKEDITOR.dialog.add 'current_user_info', (editor) ->
             ['First Name', 'first_name'],
             ['Last Name', 'last_name']
           ],
-          setup: (widget) ->
-            this.setValue(widget.data.method)
-          commit: (widget) ->
-            widget.setData('method', this.getValue())
+          setup: (widget) -> this.setValue(widget.data.method)
+          commit: (widget) -> widget.setData('method', this.getValue())
         },
         {
           id: 'color',
@@ -29,10 +27,8 @@ CKEDITOR.dialog.add 'current_user_info', (editor) ->
             ['Blue', 'blue'],
             ['Red', 'red'],
           ],
-          setup: (widget) ->
-            this.setValue(widget.data.color)
-          commit: (widget) ->
-            widget.setData('color', this.getValue())
+          setup: (widget) -> this.setValue(widget.data.color)
+          commit: (widget) -> widget.setData('color', this.getValue())
         }
       ]
     }

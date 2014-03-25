@@ -22,13 +22,12 @@ module Effective
         super.presence || "snippet_#{object_id}"
       end
 
-      def to_partial_path
-        "effective/snippets/#{class_name}/#{class_name}"
+      def data
+        self.attributes.reject { |k, v| ['region', 'class_name'].include?(k) }
       end
 
-      def to_editable_div
-        #{}"<div data-snippet='#{id}' class='#{class_name}_snippet'>[#{id}]</div>"
-        "<div class='#{class_name}_snippet'>[#{id}]</div>"
+      def to_partial_path
+        "effective/snippets/#{class_name}/#{class_name}"
       end
 
       def class_name

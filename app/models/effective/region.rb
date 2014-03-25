@@ -25,9 +25,9 @@ module Effective
     # Returns a Hash of {'snippet_1' => CurrentUserInfo.new(snippets[:key]['options'])}
     def snippet_objects
       @snippet_objects ||= snippets.map do |key, snippet|  # Key here is 'snippet_1'
-        if snippet['name']
-          klass = "Effective::Snippets::#{snippet['name'].classify}".safe_constantize
-          klass.new((snippet['options'] || {}).merge!(:region => self, :id => key)) if klass
+        if snippet['class_name']
+          klass = "Effective::Snippets::#{snippet['class_name'].classify}".safe_constantize
+          klass.new(snippet.merge!(:region => self, :id => key)) if klass
         end
       end.compact
     end
