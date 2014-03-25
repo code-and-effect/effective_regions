@@ -1,8 +1,5 @@
 module Effective
   class RegionsController < ApplicationController
-    include EffectiveRegionsHelper
-    include ActionView::Helpers::TagHelper
-
     respond_to :html, :json
     layout false
 
@@ -14,9 +11,6 @@ module Effective
     end
 
     def update
-      render :text => '', :status => 200
-      return
-
       Effective::Region.transaction do
         region_params.each do |key, vals| # article_section_2_title => {:content => '<p></p>'}
           to_save = nil  # Which object, the regionable, or the region (if global) to save
@@ -74,23 +68,6 @@ module Effective
       end
     end
 
-    # def snippet # This is a GET.  CKEDITOR passes us data, we need to render the editable content
-    #   klass = "Effective::Snippets::#{region_params[:name].try(:classify)}".safe_constantize
-
-    #   if klass.present?
-    #     @snippet = klass.new(region_params[:data])
-
-    #     html = editable_snippet_div(@snippet)
-    #     html.gsub!("[#{@snippet.id}]", render_to_string(:partial => @snippet.to_partial_path, :object => @snippet, :locals => {:snippet_preview => true}))
-
-    #     Rails.logger.info html
-
-    #     render :text => html
-    #   else
-    #     render :text => "Missing class Effective::Snippets::#{region_params[:name].try(:classify)}"
-    #   end
-    # end
-
     protected
 
     def find_regionable(key)
@@ -106,19 +83,9 @@ module Effective
 
     # TODO: Also remove any trailing tags that have no content in them....<p></p><p></p>
     def cleanup(str)
-      if str
-        # Remove the following markup
-        #<div data-snippet="snippet_0" class="text_field_tag-snippet">[snippet_01]</div>
-        # And replace with [snippet_01]
-        # So we don't have a wrapping div in our final content
-        str.scan(/(<div.+?>)(\[snippet_\d+\])(<\/div>)/).each do |match|
-          str.gsub!(match.join(), match[1]) if match.length == 3
-        end
-
+      (str || '').tap do |str|
         str.gsub!("\n", '')
-        #str.chomp!('<br>')
         str.strip!
-        str
       end
     end
 

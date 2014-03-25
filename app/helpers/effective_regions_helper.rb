@@ -14,10 +14,6 @@ module EffectiveRegionsHelper
     block_given? ? ckeditor_region(args, options) { yield } : ckeditor_region(args, options)
   end
 
-  def editable_snippet_div(snippet)
-    content_tag(:div, "[#{snippet.id}]", :class => "#{snippet.class_name}_snippet", :data => {'snippet-data' => snippet.data}).html_safe
-  end
-
   private
 
   def ckeditor_region(args, options = {}, &block)
@@ -57,7 +53,12 @@ module EffectiveRegionsHelper
   def editable(html, region)
     html.scan(/\[(snippet_\d+)\]/).flatten.uniq.each do |id|  # Finds snippet_1
       snippet = region.snippet_objects.find { |snippet| snippet.id == id }
-      html.gsub!("[#{id}]", editable_snippet_div(snippet)) if snippet
+
+      if snippet
+        editable_div = content_tag(:div, "[#{snippet.id}]", :class => "#{snippet.class_name}_snippet", :data => {'effective-snippet' => snippet.data}).html_safe
+        html.gsub!("[#{id}]", editable_div)
+      end
+
     end
     html
   end

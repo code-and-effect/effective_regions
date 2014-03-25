@@ -23,7 +23,7 @@ module Effective
       end
 
       def data
-        self.attributes.reject { |k, v| ['region', 'class_name'].include?(k) }
+        self.attributes.reject { |k, v| ['region', 'id', 'class_name'].include?(k) }
       end
 
       def to_partial_path
