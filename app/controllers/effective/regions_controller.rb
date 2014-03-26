@@ -33,7 +33,7 @@ module Effective
 
           region.content = cleanup(vals[:content])
 
-          region.snippets.clear
+          region.snippets = HashWithIndifferentAccess.new()
           (vals[:snippets] || []).each { |snippet, vals| region.snippets[snippet] = vals }
 
           to_save.save!

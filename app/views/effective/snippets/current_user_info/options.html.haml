@@ -1,9 +1,0 @@
-= form_for 'options', :url => '', :html => {:class => 'form-horizontal', :style => 'width: 615px;'} do |f|
-  .mercury-display-pane-container.form-inputs
-    = field_set_tag 'Current User Info' do
-      .control-group.string.optional
-        = label_tag 'options_method', 'Method', :class => 'string optional control-label'
-        .controls
-          = select_tag 'options[method]', options_for_select(['email', 'full_name', 'first_name', 'last_name'], @options[:method])
-  .mercury-display-controls.form-actions
-    %input.btn.btn-primary{:name => 'commit', :type => 'submit', :value => 'Insert Current User Info'}
