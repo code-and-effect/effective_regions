@@ -14,6 +14,13 @@ module EffectiveRegionsHelper
     block_given? ? ckeditor_region(args, options) { yield } : ckeditor_region(args, options)
   end
 
+  # Loads the Ckeditor Javascript & Stylesheets only when in edit mode
+  def effective_regions_include_tags
+    if request.fullpath.include?('?edit=true')
+      javascript_include_tag('effective_ckeditor') + stylesheet_link_tag('effective_ckeditor')
+    end
+  end
+
   private
 
   def ckeditor_region(args, options = {}, &block)

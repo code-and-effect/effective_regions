@@ -6,7 +6,7 @@ EffectiveRegions::Engine.routes.draw do
       get 'snippet' => 'regions#snippet', :as => :snippet # Get a Snippet based on passed values
     end
 
-    scope '/edit' do  # Changing this, means change editorUrlRegEx in mercury.min.js
+    scope '/edit' do  # Changing this, means changing the effective_ckeditor routes
       get '(*requested_uri)' => 'regions#edit', :as => :edit_effective_regions
       put '(*requested_uri)' => 'regions#update', :as => :effective_regions
     end
