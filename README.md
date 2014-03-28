@@ -111,6 +111,81 @@ rescue_from Effective::AccessDenied do |exception|
 end
 ```
 
+### Creating a Snippet
+
+Snippets are configurable blocks of content that can be dropped into an effective_region through the 'Insert Snippet' dropdown.
+
+They consist of a model, a view, and a javascript 'options' file.
+
+#### The Model
+
+A model that extends from Effective::Snippets::Snippet
+
+Any snippets defined in app/models/effective/snippets/*.rb will be automatically detected and usable.
+
+They can define one or more attribute that is configurable.
+
+```ruby
+module Effective
+  module Snippets
+    class ArticleWithExcerpt < Snippet
+      attribute :article_id, Integer
+
+      def article
+        Article.find(self.article_id)
+      end
+
+    end
+  end
+end
+```
+
+#### The View
+
+The view partial should be placed in app/views/effective/snippets/article_with_excerpt/_article_with_excerpt.html.haml
+
+```ruby
+%p This is an article snippet
+%p= article.title
+%p= article_with_excerpt.article_id
+```
+
+#### The Javascript Options File
+
+This file defines the dialog that CKEditor will present when inserting a new Snippet.
+
+This is only the Widget Dialog Window Definition file, which you can learn more about at:
+
+http://docs.ckeditor.com/#!/guide/widget_sdk_tutorial_2
+http://docs.ckeditor.com/#!/api/CKEDITOR.dialog.definition
+
+The javascript file should be placed in app/assets/javascripts/effective/snippets/article_with_excerpt.js.coffee
+
+```Coffeescript
+CKEDITOR.dialog.add 'article_with_excerpt', (editor) ->
+  title: 'Article With Excerpt',
+  minWidth: 200,
+  minHeight: 100,
+  contents: [
+    {
+      id: 'article_with_excerpt',
+      elements: [
+        {
+          id: 'article_id',
+          type: 'select',
+          label: 'Article',
+          items: <%= Article.all.map { |article| [article.title, article.id] } %>,
+          setup: (widget) -> this.setValue(widget.data.article_id),
+          commit: (widget) -> widget.setData('article_id', this.getValue())
+        }
+      ]
+    }
+  ]
+
+```
+
+Please note, this file should not be placed into the asset pipeline.
+
 
 ## License
 
