@@ -74,7 +74,7 @@ module Effective
       regionable = nil
       title = nil
 
-      if(class_name, id, title = key.scan(/(\w+)_(\d)_(\w+)/).flatten).present?
+      if(class_name, id, title = key.scan(/(\w+)_(\d+)_(\w+)/).flatten).present?
         regionable = (class_name.classify.safe_constantize).find(id) rescue nil
       end
 
