@@ -46,7 +46,8 @@ module EffectiveRegionsHelper
         }.merge(options)
       end
     else
-      region = Effective::Region.global.where(:title => title).first_or_initialize
+      regions = (@effective_regions_global ||= Effective::Region.global.to_a)
+      region = regions.find { |region| region.title == title } || Effective::Region.new(:title => title)
       content = region.try(:content)
 
       if editting
@@ -98,7 +99,11 @@ module EffectiveRegionsHelper
     snippet = (region.try(:snippet_objects) || []).find { |snippet| snippet.id == id }
 
     if snippet
-      render :partial => snippet.to_partial_path, :object => snippet
+      if Rails.env.production?
+        render(:partial => snippet.to_partial_path, :object => snippet) rescue ''
+      else
+        render(:partial => snippet.to_partial_path, :object => snippet)
+      end
     end
   end
 
