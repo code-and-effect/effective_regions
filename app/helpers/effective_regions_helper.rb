@@ -24,8 +24,6 @@ module EffectiveRegionsHelper
   private
 
   def ckeditor_region(args, options = {}, &block)
-    type = (options.delete(:type) || :full).to_s
-
     obj = args.first
     title = args.last.to_s.parameterize
     editting = request.fullpath.include?('?edit=true')
@@ -33,25 +31,43 @@ module EffectiveRegionsHelper
     if obj.kind_of?(ActiveRecord::Base)
       raise StandardError.new('Object passed to effective_region helper must declare act_as_regionable') unless obj.respond_to?(:acts_as_regionable)
 
-      opts = {:id => [model_name_from_record_or_class(obj).param_key(), obj.id, title].join('_'), 'data-effective-ckeditor' => type, :contenteditable => true, :style => '-webkit-user-modify: read-write;', :class => 'effective-region'}.merge(options)
-
       region = obj.regions.find { |region| region.title == title }
       content = region.try(:content)
-      can_edit = (EffectiveRegions.authorized?(controller, :update, obj) rescue false) if editting
-    else
-      opts = {:id => title.to_s.parameterize, 'data-effective-ckeditor' => type, :contenteditable => true, :style => '-webkit-user-modify: read-write;', :class => 'effective-region'}.merge(options)
 
+      if editting
+        can_edit = (EffectiveRegions.authorized?(controller, :update, obj) rescue false)
+
+        opts = {
+          :id => [model_name_from_record_or_class(obj).param_key(), obj.id, title].join('_'), 
+          :contenteditable => true, 
+          'data-effective-ckeditor' => (options.delete(:type) || :full).to_s, 
+          :style => ['-webkit-user-modify: read-write;', options.delete(:style)].compact.join(' '),
+          :class => ['effective-region', options.delete(:class)].compact.join(' ')
+        }.merge(options)
+      end
+    else
       region = Effective::Region.global.where(:title => title).first_or_initialize
       content = region.try(:content)
-      can_edit = (EffectiveRegions.authorized?(controller, :update, region) rescue false) if editting
+
+      if editting
+        can_edit = (EffectiveRegions.authorized?(controller, :update, region) rescue false)
+
+        opts = {
+          :id => title.to_s.parameterize, 
+          :contenteditable => true, 
+          'data-effective-ckeditor' => (options.delete(:type) || :full).to_s, 
+          :style => ['-webkit-user-modify: read-write;', options.delete(:style)].compact.join(' '),
+          :class => ['effective-region', options.delete(:class)].compact.join(' ')
+        }.merge(options)
+      end
     end
 
     if editting && can_edit # If we need the editable div
       content_tag(:div, opts) do
-        content.present? ? expand_snippets(editable(content, region), region, options).html_safe : ((capture(&block).strip.html_safe) if block_given?)
+        content.present? ? expand_snippets(editable(content, region), region).html_safe : ((capture(&block).strip.html_safe) if block_given?)
       end
     else
-      content.present? ? expand_snippets(content, region, options).html_safe : ((capture(&block).strip.html_safe) if block_given?)
+      content.present? ? expand_snippets(content, region).html_safe : ((capture(&block).strip.html_safe) if block_given?)
     end
   end
 
@@ -70,19 +86,19 @@ module EffectiveRegionsHelper
     html
   end
 
-  def expand_snippets(html, region, options)
+  def expand_snippets(html, region)
     html.scan(/\[(snippet_\d+)\]/).flatten.uniq.each do |id| # find snippet_1 and insert snippet content
-      content = snippet_content(id, region, options)
+      content = snippet_content(id, region)
       html.gsub!("[#{id}]", content) if content
     end
     html
   end
 
-  def snippet_content(id, region, options = {})
+  def snippet_content(id, region)
     snippet = (region.try(:snippet_objects) || []).find { |snippet| snippet.id == id }
 
     if snippet
-      render :partial => snippet.to_partial_path, :object => snippet, :locals => options
+      render :partial => snippet.to_partial_path, :object => snippet
     end
   end
 

@@ -81,9 +81,9 @@ module Effective
       return regionable, (title || key)
     end
 
-    # TODO: Also remove any trailing tags that have no content in them....<p></p><p></p>
     def cleanup(str)
       (str || '').tap do |str|
+        str.chomp!('<p>&nbsp;</p>') # Remove any trailing empty <p>'s
         str.gsub!("\n", '')
         str.strip!
       end
