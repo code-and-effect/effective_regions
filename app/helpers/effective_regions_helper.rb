@@ -33,13 +33,13 @@ module EffectiveRegionsHelper
     if obj.kind_of?(ActiveRecord::Base)
       raise StandardError.new('Object passed to effective_region helper must declare act_as_regionable') unless obj.respond_to?(:acts_as_regionable)
 
-      opts = {:id => [model_name_from_record_or_class(obj).param_key(), obj.id, title].join('_'), 'data-effective-ckeditor' => type, :contenteditable => true}.merge(options)
+      opts = {:id => [model_name_from_record_or_class(obj).param_key(), obj.id, title].join('_'), 'data-effective-ckeditor' => type, :contenteditable => true, :style => '-webkit-user-modify: read-write;', :class => 'effective-region'}.merge(options)
 
       region = obj.regions.find { |region| region.title == title }
       content = region.try(:content)
       can_edit = (EffectiveRegions.authorized?(controller, :update, obj) rescue false) if editting
     else
-      opts = {:id => title.to_s.parameterize, 'data-effective-ckeditor' => type, :contenteditable => true}.merge(options)
+      opts = {:id => title.to_s.parameterize, 'data-effective-ckeditor' => type, :contenteditable => true, :style => '-webkit-user-modify: read-write;', :class => 'effective-region'}.merge(options)
 
       region = Effective::Region.global.where(:title => title).first_or_initialize
       content = region.try(:content)
