@@ -5,17 +5,11 @@ module Effective
     class Snippet
       include Virtus.model
 
-      attr_accessor :attributes
-      attr_accessor :options
-
       attribute :id, String # This will be snippet_12345
       attribute :region, Effective::Region # The region Object
 
-      def initialize(attributes = {}, options = {})
-        @attributes ||= attributes
-        @options ||= options
-
-        (@attributes || []).each { |k, v| self.send("#{k}=", v) if respond_to?("#{k}=") }
+      def initialize(atts = {})
+        (atts || {}).each { |k, v| self.send("#{k}=", v) if respond_to?("#{k}=") }
       end
 
       def id
@@ -23,7 +17,7 @@ module Effective
       end
 
       def data
-        self.attributes.reject { |k, v| ['region', 'id', 'class_name'].include?(k) }
+        self.attributes.reject { |k, v| [:region, :id].include?(k) }
       end
 
       def to_partial_path
