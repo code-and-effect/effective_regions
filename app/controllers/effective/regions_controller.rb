@@ -6,6 +6,8 @@ module Effective
     def edit
       EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
 
+      cookies['effective_regions_editting'] = {:value => request.referrer, :path => '/'}
+
       # TODO: turn this into a cookie or something better.
       redirect_to request.url.gsub('/edit', '') + '?edit=true'
     end
