@@ -54,6 +54,26 @@ Do not add anything to your asset pipeline javascripts or stylesheets.
 
 ## Usage
 
+### Regions
+
+You can put a region into any regular view, anywhere you want a dynamic content area
+
+```ruby
+%h2 This is a paragraph header
+%p
+  = effective_region :footer_left do
+    %p Default content
+```
+
+or as an object
+
+```ruby
+%h2 This is a paragraph header
+%p
+  = effective_region @page, :content, :snippets => [:current_user_info] do
+    %p Default content
+```
+
 ### Authorization
 
 All authorization checks are handled via the config.authorization_method found in the effective_regions.rb initializer.
