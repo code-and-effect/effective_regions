@@ -29,8 +29,14 @@ module Effective
       end
 
       ### The following methods are used for the CKEditor widget creation.
+      def snippet_name
+        class_name.to_s.humanize
+      end
 
-      # Either a string, or false if there are no options.
+      def snippet_description
+        "Insert #{snippet_name}"
+      end
+
       def snippet_dialog_url
         "/assets/effective/snippets/#{class_name}.js"
       end
