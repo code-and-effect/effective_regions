@@ -86,7 +86,7 @@ module EffectiveRegionsHelper
     end
 
     if effectively_editting? && can_edit
-      content_tag(:div, content, :class => "#{snippet.class_name}_snippet", :data => {'effective-snippet' => snippet.data})
+      content_tag(snippet.snippet_wrapper_tag, content, :class => "#{snippet.class_name}_snippet", :data => {'effective-snippet' => snippet.data})
     else
       content
     end.html_safe
