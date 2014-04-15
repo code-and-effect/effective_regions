@@ -53,7 +53,12 @@ module Effective
 
       retval = {}
       EffectiveRegions.snippets.each do |snippet|
-        retval[snippet.class_name] = { :dialog_url => snippet.snippet_dialog_url, :snippet_name => snippet.snippet_name, :snippet_description => snippet.snippet_description }
+        retval[snippet.class_name] = { 
+          :dialog_url => snippet.snippet_dialog_url, 
+          :label => snippet.snippet_label, 
+          :description => snippet.snippet_description,
+          :inline => snippet.snippet_inline
+        }
       end
 
       render :json => retval

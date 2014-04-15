@@ -29,12 +29,16 @@ module Effective
       end
 
       ### The following methods are used for the CKEditor widget creation.
-      def snippet_name
+      def snippet_label
         class_name.to_s.humanize
       end
 
       def snippet_description
-        "Insert #{snippet_name}"
+        "Insert #{snippet_label}"
+      end
+
+      def snippet_inline
+        false
       end
 
       def snippet_dialog_url
