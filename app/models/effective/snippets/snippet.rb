@@ -37,6 +37,11 @@ module Effective
         "Insert #{snippet_label}"
       end
 
+      # This could be overridden to 'li', and snippet_inline true
+      def snippet_wrapper_tag
+        snippet_inline ? 'span' : 'div'
+      end
+
       def snippet_inline
         false
       end

@@ -57,7 +57,8 @@ module Effective
           :dialog_url => snippet.snippet_dialog_url, 
           :label => snippet.snippet_label, 
           :description => snippet.snippet_description,
-          :inline => snippet.snippet_inline
+          :inline => snippet.snippet_inline,
+          :wrapper_tag => snippet.snippet_wrapper_tag
         }
       end
 
