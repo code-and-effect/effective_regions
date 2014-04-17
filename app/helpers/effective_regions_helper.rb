@@ -33,7 +33,7 @@ module EffectiveRegionsHelper
         :contenteditable => true, 
         'data-effective-ckeditor' => (options.delete(:type) || :full).to_s, 
         'data-only-snippets' => [options.delete(:snippets)].flatten.compact.to_json,
-        :style => ['-webkit-user-modify: read-write;', options.delete(:style)].compact.join(' '),
+        :style => ['-webkit-user-modify: read-write;', options.delete(:style), ('display: inline;' if options.delete(:inline))].compact.join(' '),
         :class => ['effective-region', options.delete(:class)].compact.join(' ')
       }.merge(options)
     end
