@@ -2,6 +2,7 @@ module Effective
   class RegionsController < ApplicationController
     respond_to :html, :json
     layout false
+    skip_before_filter :verify_authenticity_token, :only => [:update]
 
     def edit
       EffectiveRegions.authorized?(self, :edit, Effective::Region.new())

@@ -19,8 +19,15 @@ module ActsAsRegionable
     true
   end
 
-  def snippet_objects
-    regions.map { |region| region.snippet_objects }.flatten
+  def snippet_objects(klass = nil)
+    objs = regions.map { |region| region.snippet_objects }.flatten
+
+    if klass
+      objs = objs.select { |obj| obj.class == klass }
+    else
+      objs
+    end
+
   end
 
 end
