@@ -84,18 +84,16 @@ module EffectiveRegionsHelper
 
   def render_snippet(snippet, can_edit = true)
     return '' unless snippet
+    render(:partial => snippet.to_partial_path, :object => snippet, :locals => {:snippet => snippet})
+  end
 
-    if Rails.env.production?
-      content = render(:partial => snippet.to_partial_path, :object => snippet) rescue ''
-    else
-      content = render(:partial => snippet.to_partial_path, :object => snippet)
-    end
+  def snippet_data(snippet, options = {})
+    return {} unless effectively_editting?
 
-    if effectively_editting? && can_edit
-      content_tag(snippet.snippet_wrapper_tag, content, :class => "#{snippet.class_name}_snippet", :data => {'effective-snippet' => snippet.data})
-    else
-      content
-    end.html_safe
+    {
+      'effective-snippet' => snippet.class_name,
+      'snippet-data' => snippet.data().to_json
+    }.merge(options)
   end
 
   def effectively_editting?

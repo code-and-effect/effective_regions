@@ -8,6 +8,14 @@ module Effective
       attribute :id, String # This will be snippet_12345
       attribute :region, Effective::Region # The region Object
 
+      # SO I have to add some restrictions on how snippets are built:
+
+      # Each Snippet has to be a block (or inline) element with nested children.
+      # It has to start with a root object
+
+      # That root object has to do {snippet_data(snippet)}
+
+
       def initialize(atts = {})
         (atts || {}).each { |k, v| self.send("#{k}=", v) if respond_to?("#{k}=") }
       end
@@ -21,7 +29,7 @@ module Effective
       end
 
       def to_partial_path
-        "effective/snippets/#{class_name}/#{class_name}"
+        "effective/snippets/#{class_name}"
       end
 
       def class_name
@@ -37,12 +45,11 @@ module Effective
         "Insert #{snippet_label}"
       end
 
-      # This could be overridden to 'li', and snippet_inline true
-      def snippet_wrapper_tag
-        snippet_inline ? :span : :div
+      def snippet_inline
+        false
       end
 
-      def snippet_inline
+      def snippet_editables
         false
       end
 

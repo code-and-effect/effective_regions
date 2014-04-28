@@ -54,12 +54,13 @@ module Effective
 
       retval = {}
       EffectiveRegions.snippets.each do |snippet|
-        retval[snippet.class_name] = { 
+        retval[snippet.class_name] = {
           :dialog_url => snippet.snippet_dialog_url, 
           :label => snippet.snippet_label, 
           :description => snippet.snippet_description,
           :inline => snippet.snippet_inline,
-          :wrapper_tag => snippet.snippet_wrapper_tag
+          :editables => snippet.snippet_editables,
+          #:template => ActionView::Base.new(ActionController::Base.view_paths, {}, ActionController::Base.new).render(:partial => snippet.to_partial_path, :object => snippet, :locals => {:snippet => snippet})
         }
       end
 
@@ -71,7 +72,7 @@ module Effective
 
       if klass.present?
         @snippet = klass.new(region_params[:data])
-        render :partial => @snippet.to_partial_path, :object => @snippet, :locals => {:snippet_preview => true}
+        render :partial => @snippet.to_partial_path, :object => @snippet, :locals => {:snippet => @snippet, :snippet_preview => true}
       else
         render :text => "Missing class Effective::Snippets::#{region_params[:name].try(:classify)}"
       end

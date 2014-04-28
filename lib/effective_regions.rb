@@ -14,6 +14,7 @@ module EffectiveRegions
     true
   end
 
+  # Returns a Snippet.new() for every class in the /app/effective/snippets/* directory
   def self.snippets
     Rails.env.development? ? read_snippets : (@@snippets ||= read_snippets)
   end
@@ -25,10 +26,12 @@ module EffectiveRegions
 
     begin
       # Reversing here so the app's templates folder has precedence.
+
       files = ApplicationController.view_paths.map { |path| Dir["#{path}/effective/snippets/**"] }.flatten.reverse
 
       files.each do |file|
         snippet = File.basename(file)
+        snippet = snippet[1...snippet.index('.') || snippet.length] # remove the _ and .html.haml
         if (klass = "Effective::Snippets::#{snippet.try(:classify)}".safe_constantize)
           snippets << klass unless snippets.include?(klass)
         end
