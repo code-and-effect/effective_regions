@@ -3,8 +3,8 @@ module Effective
     class CurrentUserInfo < Snippet
       attribute :method, String
 
-      def snippet_inline
-        true
+      def snippet_tag
+        :span
       end
       
     end

@@ -60,6 +60,7 @@ module Effective
           :description => snippet.snippet_description,
           :inline => snippet.snippet_inline,
           :editables => snippet.snippet_editables,
+          :tag => snippet.snippet_tag.to_s
           #:template => ActionView::Base.new(ActionController::Base.view_paths, {}, ActionController::Base.new).render(:partial => snippet.to_partial_path, :object => snippet, :locals => {:snippet => snippet})
         }
       end

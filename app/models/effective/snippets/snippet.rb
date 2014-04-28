@@ -45,8 +45,12 @@ module Effective
         "Insert #{snippet_label}"
       end
 
+      def snippet_tag
+        :div
+      end
+
       def snippet_inline
-        false
+        [:span].include?(snippet_tag)
       end
 
       def snippet_editables

@@ -89,11 +89,7 @@ module EffectiveRegionsHelper
 
   def snippet_data(snippet, options = {})
     return {} unless effectively_editting?
-
-    {
-      'effective-snippet' => snippet.class_name,
-      'snippet-data' => snippet.data().to_json
-    }.merge(options)
+    {'effective-snippet' => snippet.class_name, 'snippet-data' => snippet.data().to_json}.merge(options)
   end
 
   def effectively_editting?
