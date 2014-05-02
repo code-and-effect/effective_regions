@@ -14,8 +14,8 @@ module EffectiveRegionsHelper
     block_given? ? ckeditor_region(args, options) { yield } : ckeditor_region(args, options)
   end
 
-  def list_snippet_effective_region(*args)
-    (options = args.extract_options!).merge!(:type => :list_snippets)
+  def wrapped_snippet_effective_region(*args)
+    (options = args.extract_options!).merge!(:type => :wrapped_snippets)
     block_given? ? ckeditor_region(args, options) { yield } : ckeditor_region(args, options)
   end
 
@@ -31,6 +31,7 @@ module EffectiveRegionsHelper
   def ckeditor_region(args, options = {}, &block)
     obj = args.first
     title = args.last.to_s.parameterize
+    editable_tag = options.delete(:editable_tag) || :div
 
     # Set up the editable div options we need to send to ckeditor
     if effectively_editting?
@@ -63,7 +64,7 @@ module EffectiveRegionsHelper
     end
 
     if effectively_editting? && can_edit # If we need the editable div
-      content_tag(:div, opts) do
+      content_tag(editable_tag, opts) do
         region.try(:content).present? ? render_region(region, true) : ((capture(&block).strip.html_safe) if block_given?)
       end
     else
@@ -84,12 +85,18 @@ module EffectiveRegionsHelper
 
   def render_snippet(snippet, can_edit = true)
     return '' unless snippet
-    render(:partial => snippet.to_partial_path, :object => snippet, :locals => {:snippet => snippet})
-  end
 
-  def snippet_data(snippet, options = {})
-    return {} unless effectively_editting?
-    {'effective-snippet' => snippet.class_name, 'snippet-data' => snippet.data().to_json}.merge(options)
+    if Rails.env.production?
+      content = render(:partial => snippet.to_partial_path, :object => snippet, :locals => {:snippet => snippet}) rescue ''
+    else
+      content = render(:partial => snippet.to_partial_path, :object => snippet, :locals => {:snippet => snippet})
+    end
+
+    if effectively_editting? && can_edit
+      content_tag(snippet.snippet_tag, content, :data => {'effective-snippet' => snippet.class_name, 'snippet-data' => snippet.data().to_json})
+    else
+      content
+    end.html_safe
   end
 
   def effectively_editting?

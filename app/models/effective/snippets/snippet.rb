@@ -45,8 +45,24 @@ module Effective
         "Insert #{snippet_label}"
       end
 
+      def snippet_dialog_url
+        "/assets/effective/snippets/#{class_name}.js"
+      end
+
+      # This is the tag that the ckeditor snippet will be created as
+      # It supports divs and spans, but that's it
+      # No ULs, or LIs
       def snippet_tag
         :div
+      end
+
+      # This is the wrapper that will contain the snippet when inserted into a wrapped_snippet_Effective_region
+      def snippet_wrap_tag
+        false
+      end
+
+      def snippet_wrap_anchor_selector
+        ".closest('ul,ol')"
       end
 
       def snippet_inline
@@ -55,10 +71,6 @@ module Effective
 
       def snippet_editables
         false
-      end
-
-      def snippet_dialog_url
-        "/assets/effective/snippets/#{class_name}.js"
       end
 
     end
