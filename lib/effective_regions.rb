@@ -19,6 +19,11 @@ module EffectiveRegions
     Rails.env.development? ? read_snippets : (@@snippets ||= read_snippets)
   end
 
+  # Returns a Template.new() for every class in the /app/effective/templates/* directory
+  def self.templates
+    Rails.env.development? ? read_templates : (@@templates ||= read_templates)
+  end
+
   private
 
   def self.read_snippets
@@ -40,6 +45,28 @@ module EffectiveRegions
       snippets.map { |klass| klass.new() rescue nil }.compact
     rescue => e
       []
+    end
+  end
+
+  def self.read_templates
+    templates = []
+
+    begin
+      # Reversing here so the app's templates folder has precedence.
+
+      files = ApplicationController.view_paths.map { |path| Dir["#{path}/effective/templates/**"] }.flatten.reverse
+
+      files.each do |file|
+        template = File.basename(file)
+        template = template[1...template.index('.') || template.length] # remove the _ and .html.haml
+        if (klass = "Effective::Templates::#{template.try(:classify)}".safe_constantize)
+          templates << klass unless templates.include?(klass)
+        end
+      end
+
+      templates.map { |klass| klass.new() rescue nil }.compact
+    rescue => e
+     []
     end
   end
 

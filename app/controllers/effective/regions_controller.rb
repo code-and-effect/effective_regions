@@ -79,6 +79,21 @@ module Effective
       end
     end
 
+    def templates
+      EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
+
+      retval = EffectiveRegions.templates.map do |template|
+        {
+          :title => template.title,
+          :description => template.description,
+          :image => template.image || "#{template.class_name}.png",
+          :html => ActionView::Base.new(ActionController::Base.view_paths, {}, ActionController::Base.new).render(:partial => template.to_partial_path, :object => template, :locals => {:template => template})
+        }
+      end
+
+      render :json => retval
+    end
+
     protected
 
     def find_regionable(key)

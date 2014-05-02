@@ -4,6 +4,8 @@ EffectiveRegions::Engine.routes.draw do
     scope '/effective_regions' do
       get 'snippets' => 'regions#snippets', :as => :snippets # Index of all Snippets
       get 'snippet' => 'regions#snippet', :as => :snippet # Get a Snippet based on passed values
+
+      get 'templates' => 'regions#templates', :as => :templates # Index of all Templates
     end
 
     scope '/edit' do  # Changing this, means changing the effective_ckeditor routes

@@ -56,15 +56,6 @@ module Effective
         :div
       end
 
-      # This is the wrapper that will contain the snippet when inserted into a wrapped_snippet_Effective_region
-      def snippet_wrap_tag
-        false
-      end
-
-      def snippet_wrap_anchor_selector
-        ".closest('ul,ol')"
-      end
-
       def snippet_inline
         [:span].include?(snippet_tag)
       end
