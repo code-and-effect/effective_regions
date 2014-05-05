@@ -2,6 +2,8 @@ module Effective
   class RegionsController < ApplicationController
     respond_to :html, :json
     layout false
+    
+    before_filter :authenticate_user! if defined?(Devise)
     skip_before_filter :verify_authenticity_token, :only => [:update]
 
     def edit
