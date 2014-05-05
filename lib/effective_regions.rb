@@ -27,46 +27,27 @@ module EffectiveRegions
   private
 
   def self.read_snippets
-    snippets = []
+    # Reversing here so the app's templates folder has precedence.
+    files = ApplicationController.view_paths.map { |path| Dir["#{path}/effective/snippets/**"] }.flatten.reverse
 
-    begin
-      # Reversing here so the app's templates folder has precedence.
+    files.map do |file|
+      snippet = File.basename(file)
+      snippet = snippet[1...snippet.index('.') || snippet.length] # remove the _ and .html.haml
 
-      files = ApplicationController.view_paths.map { |path| Dir["#{path}/effective/snippets/**"] }.flatten.reverse
-
-      files.each do |file|
-        snippet = File.basename(file)
-        snippet = snippet[1...snippet.index('.') || snippet.length] # remove the _ and .html.haml
-        if (klass = "Effective::Snippets::#{snippet.try(:classify)}".safe_constantize)
-          snippets << klass unless snippets.include?(klass)
-        end
-      end
-
-      snippets.map { |klass| klass.new() rescue nil }.compact
-    rescue => e
-      []
+      "Effective::Snippets::#{snippet.try(:classify)}".constantize.new()
     end
+
   end
 
   def self.read_templates
-    templates = []
+    # Reversing here so the app's templates folder has precedence.
+    files = ApplicationController.view_paths.map { |path| Dir["#{path}/effective/templates/**"] }.flatten.reverse
 
-    begin
-      # Reversing here so the app's templates folder has precedence.
+    files.map do |file|
+      template = File.basename(file)
+      template = template[1...template.index('.') || template.length] # remove the _ and .html.haml
 
-      files = ApplicationController.view_paths.map { |path| Dir["#{path}/effective/templates/**"] }.flatten.reverse
-
-      files.each do |file|
-        template = File.basename(file)
-        template = template[1...template.index('.') || template.length] # remove the _ and .html.haml
-        if (klass = "Effective::Templates::#{template.try(:classify)}".safe_constantize)
-          templates << klass unless templates.include?(klass)
-        end
-      end
-
-      templates.map { |klass| klass.new() rescue nil }.compact
-    rescue => e
-     []
+      "Effective::Templates::#{template.try(:classify)}".constantize.new()
     end
   end
 
