@@ -26,6 +26,10 @@ module EffectiveRegionsHelper
     end
   end
 
+  def effectively_editting?
+    @effectively_editting ||= request.fullpath.include?('?edit=true')
+  end
+
   private
 
   def ckeditor_region(args, options = {}, &block)
@@ -99,8 +103,6 @@ module EffectiveRegionsHelper
     end.html_safe
   end
 
-  def effectively_editting?
-    @effectively_editting ||= request.fullpath.include?('?edit=true')
-  end
+
 
 end
