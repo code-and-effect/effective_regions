@@ -14,6 +14,11 @@ module EffectiveRegionsHelper
     block_given? ? ckeditor_region(args, options) { yield } : ckeditor_region(args, options)
   end
 
+  def paste_effective_region(*args)
+    (options = args.extract_options!).merge!(:type => :paste)
+    block_given? ? ckeditor_region(args, options) { yield } : ckeditor_region(args, options)
+  end
+
   def wrapped_snippet_effective_region(*args)
     (options = args.extract_options!).merge!(:type => :wrapped_snippets)
     block_given? ? ckeditor_region(args, options) { yield } : ckeditor_region(args, options)
