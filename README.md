@@ -37,12 +37,6 @@ Then migrate the database:
 rake db:migrate
 ```
 
-Mount the Rails Engine at the root location.  This should appear below your root :to => '' definition in your routes.rb file
-
-```ruby
-mount EffectiveRegions::Engine => '/', :as => 'effective_regions'
-```
-
 Add the following helper to your application layout in the <head>..</head> section.  This will have the effect of loading the appropriate javascript & stylesheets only when in 'edit mode'.
 
 ```ruby
@@ -108,7 +102,7 @@ There are 3 different levels of permissions to be considered:
 
 1. Can I use the editor at all?
 
-can :edit, Effective::Region 
+can :edit, Effective::Region
 
 2. Can I update the Effective::Region global regions?
 

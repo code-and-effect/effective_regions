@@ -1,9 +1,12 @@
-EffectiveRegions::Engine.routes.draw do
+Rails.application.routes.draw do
+  mount EffectiveRegions::Engine => '/', :as => 'effective_regions'
+end
 
+EffectiveRegions::Engine.routes.draw do
   scope :module => 'effective' do
-    scope '/effective_regions' do
+    scope '/effective' do
       get 'snippets' => 'regions#snippets', :as => :snippets # Index of all Snippets
-      get 'snippet' => 'regions#snippet', :as => :snippet # Get a Snippet based on passed values
+      get 'snippet/:id' => 'regions#snippet', :as => :snippet # Get a Snippet based on passed values
 
       get 'templates' => 'regions#templates', :as => :templates # Index of all Templates
     end
