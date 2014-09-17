@@ -158,10 +158,13 @@ end
 
 The view partial should be placed in app/views/effective/snippets/article_with_excerpt/_article_with_excerpt.html.haml
 
+The partials work best when you can start them with a div
+
 ```ruby
-%p This is an article snippet
-%p= article.title
-%p= article_with_excerpt.article_id
+.article_with_excerpt
+  %p This is an article snippet
+  %p= article.title
+  %p= article_with_excerpt.article_id
 ```
 
 #### The Javascript Options File
