@@ -2,7 +2,7 @@ module Effective
   class RegionsController < ApplicationController
     respond_to :html, :json
     layout false
-    
+
     before_filter :authenticate_user! if defined?(Devise)
     skip_before_filter :verify_authenticity_token, :only => [:update]
 
@@ -57,8 +57,8 @@ module Effective
       retval = {}
       EffectiveRegions.snippets.each do |snippet|
         retval[snippet.class_name] = {
-          :dialog_url => snippet.snippet_dialog_url, 
-          :label => snippet.snippet_label, 
+          :dialog_url => snippet.snippet_dialog_url,
+          :label => snippet.snippet_label,
           :description => snippet.snippet_description,
           :inline => snippet.snippet_inline,
           :editables => snippet.snippet_editables,
@@ -89,7 +89,7 @@ module Effective
           :title => template.title,
           :description => template.description,
           :image => template.image || "#{template.class_name}.png",
-          :html => ActionView::Base.new(ActionController::Base.view_paths, {}, ActionController::Base.new).render(:partial => template.to_partial_path, :object => template, :locals => {:template => template})
+          :html => render_to_string(:partial => template.to_partial_path, :object => template, :locals => {:template => template})
         }
       end
 
