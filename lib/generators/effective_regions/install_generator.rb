@@ -15,10 +15,6 @@ module EffectiveRegions
         end
       end
 
-      def setup_routes
-        inject_into_file "config/routes.rb", "\n  mount EffectiveRegions::Engine => '/', :as => 'effective_regions'", :after => /root (:?)to.*/
-      end
-
       def copy_initializer
         template "effective_regions.rb", "config/initializers/effective_regions.rb"
       end
