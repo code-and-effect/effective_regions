@@ -14,7 +14,7 @@ module Effective
 
     serialize :snippets, HashWithIndifferentAccess
 
-    scope :global, -> { where('regionable_type IS NULL').where('regionable_id IS NULL') }
+    scope :global, -> { where("#{EffectiveRegions.regions_table_name}.regionable_type IS NULL").where("#{EffectiveRegions.regions_table_name}.regionable_id IS NULL") }
 
     def snippets
       self[:snippets] || HashWithIndifferentAccess.new()
@@ -33,7 +33,7 @@ module Effective
     end
 
     def global?
-      self.regionable_id == nil && self.regionable_type == nil
+      regionable_id == nil && regionable_type == nil
     end
 
   end
