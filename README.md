@@ -440,6 +440,7 @@ We can pre-populate an effective_region's default content with some posts.  Thes
 = snippet_effective_region :sidebar_posts, :snippets => [:post] do
   - Post.order(:created_at).first(5).each do |post|
     = render_snippet Effective::Snippets::Post.new(:post_id => post.id)
+```
 
 
 ### Summary
