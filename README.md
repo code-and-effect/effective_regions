@@ -107,7 +107,7 @@ This is not always desirable - sometimes you want to lock down the content avail
 
 To allow text-only entry with no HTML or snippets, use `simple_effective_region`:
 
-```ruby
+```haml
 %h2
   = simple_effective_region @event, :title do
     Default Title
@@ -119,21 +119,21 @@ This gives the user full control of the content, and allows the design and prese
 
 Similarly, you may want to allow only Snippets to be inserted into a specific region:
 
-```ruby
+```haml
 %div
   = snippet_effective_region :sidebar_mentions
 ```
 
 only one type of snippet to be allowed:
 
-```ruby
+```haml
 %div
   = snippet_effective_region(:sidebar_mentions, :snippets => [:mention])
 ```
 
 or allow full content entry, but only a subset of the available Snippets:
 
-```ruby
+```haml
 %div
   = effective_region(:sidebar_mentions, :snippets => [:mention])
 ```
@@ -268,6 +268,7 @@ This file defines the dialog that CKEditor will present when inserting a new Sni
 This must follow the CKEditor Widget Dialog Window Definition specification, which you can learn more about at:
 
 http://docs.ckeditor.com/#!/guide/widget_sdk_tutorial_2
+
 http://docs.ckeditor.com/#!/api/CKEDITOR.dialog.definition
 
 The javascript file must be placed in app/assets/javascripts/effective/snippets/current_user_info.js.coffee
@@ -345,7 +346,7 @@ This view partial is defined in app/views/effective/snippets/_post.html.haml
 
 Some advanced snippet partials work best with CKEditor when you can start them with a parent div.  This one isn't advanced enough to actually matter.
 
-```ruby
+```haml
 .post
   %h3= post.post_object.title
   %small
