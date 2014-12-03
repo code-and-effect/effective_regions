@@ -1,4 +1,4 @@
-- if current_user_info.present? == false
+- if current_user.present? == false
   = 'Not logged in'
 - elsif current_user_info.method == 'email'
   = (current_user.email rescue '')
