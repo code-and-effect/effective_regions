@@ -18,7 +18,11 @@ module Effective
     end
 
     def update
+      javascript_should_refresh_page = ''
+
       Effective::Region.transaction do
+        (request.fullpath.slice!(0..4) rescue nil) if request.fullpath.to_s.starts_with?('/edit') # This is so the before_save_method can reference the real current page
+
         region_params.each do |key, vals| # article_section_2_title => {:content => '<p></p>'}
           to_save = nil  # Which object, the regionable, or the region (if global) to save
 
@@ -43,10 +47,15 @@ module Effective
           region.snippets = HashWithIndifferentAccess.new()
           (vals[:snippets] || []).each { |snippet, vals| region.snippets[snippet] = vals }
 
+          # Last chance for a developer to make some changes here
+          if (run_before_save_method(region, regionable) rescue nil) == :refresh
+            javascript_should_refresh_page = 'refresh'
+          end
+
           to_save.save!
         end
 
-        render :text => '', :status => 200
+        render :text => javascript_should_refresh_page, :status => 200
         return
       end
 
@@ -126,6 +135,20 @@ module Effective
         params[:effective_regions]
       end
     end
+
+    private
+
+    def run_before_save_method(region, regionable)
+      return nil if region == nil
+
+      if EffectiveRegions.before_save_method.respond_to?(:call)
+        view_context.instance_exec(region, (regionable || :global), &EffectiveRegions.before_save_method)
+      elsif EffectiveRegions.before_save_method.kind_of?(Symbol)
+        self.instance_exec(self, region, (regionable || :global), &EffectiveRegions.before_save_method)
+      end
+
+    end
+
   end
 end
 

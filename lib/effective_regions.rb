@@ -4,6 +4,7 @@ require "effective_regions/version"
 module EffectiveRegions
   mattr_accessor :regions_table_name
   mattr_accessor :authorization_method
+  mattr_accessor :before_save_method
 
   def self.setup
     yield self
