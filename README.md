@@ -1,12 +1,12 @@
 # Effective Regions
 
-Define editable content regions within your existing, ordinary ActionView::Base views. Update content with an actually-good full-screen WYSIWYG editor.
+Create editable content regions within your existing, ordinary ActionView::Base views, and update content with an actually-good full-screen WYSIWYG editor.
 
-Create and Insert Snippets (mini model-view components) that intelligently render content based on the user selected attributes.
+Define and Insert Snippets (mini model-view components) that intelligently render content based on the user selected attributes.
 
 Specify and Insert pre-defined HTML-only templates for small pieces of common HTML.
 
-Uses [effective_ckeditor](https://github.com/code-and-effect/effective_ckeditor) to edit content regions.
+Uses the actually-good fullscreen editor [effective_ckeditor](https://github.com/code-and-effect/effective_ckeditor) to achieve near perfect WYSIWYG editting of content regions.
 
 
 ## Getting Started

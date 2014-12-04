@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.email       = ["info@codeandeffect.com"]
   s.authors     = ["Code and Effect"]
   s.homepage    = "https://github.com/code-and-effect/effective_regions"
-  s.summary     = "Library"
-  s.description = "Oh yea"
+  s.summary     = "Create editable content regions within your existing, ordinary ActionView::Base views, and update content with an actually-good full-screen WYSIWYG editor."
+  s.description = "Create editable content regions within your existing, ordinary ActionView::Base views, and update content with an actually-good full-screen WYSIWYG editor."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["spec/**/*"]
