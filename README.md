@@ -333,15 +333,15 @@ http://docs.ckeditor.com/#!/api/CKEDITOR.dialog.definition
 The javascript file must be placed in app/assets/javascripts/effective/snippets/current_user_info.js.coffee
 
 ```Coffeescript
-CKEDITOR.dialog.add 'current_user_info', (editor) ->  // Must match the class name of the snippet
+CKEDITOR.dialog.add 'current_user_info', (editor) ->  # Must match the class name of the snippet
   title: 'Current User Info',
   minWidth: 200,
   minHeight: 100,
   contents: [
     {
-      id: 'current_user_info',    // Just an html id, doesn't really matter what is here
+      id: 'current_user_info',    # Just an html id, doesn't really matter what is here
       elements: [
-        {                         // elements Array should contain one Hash for each Snippet attribute
+        {                         # elements Array should contain one Hash for each Snippet attribute
           id: 'display_method',
           type: 'select',
           label: 'Current User Info',
