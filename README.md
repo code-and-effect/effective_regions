@@ -229,15 +229,15 @@ end
 
 There are 3 different levels of permissions to be considered:
 
-1. Can I use the editor at all?
+1 - Can I use the editor at all?
 
 can :edit, Effective::Region
 
-2. Can I update the Effective::Region global regions?
+2 - Can I update the Effective::Region global regions?
 
 can :update, Effective::Region
 
-3. Can I update the individual objects which define `acts_as_regionable`
+3 - Can I update the individual objects which define `acts_as_regionable`
 
 can :update, ActsAsRegionableObject  # This would be your Event, Post, or Page, or whatever.
 
