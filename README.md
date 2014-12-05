@@ -113,7 +113,7 @@ To allow text-only entry with no HTML or snippets, use `simple_effective_region`
     Default Title
 ```
 
-The above example ensures that the full-screen editor will only accept a simple title.  No HTML is allowed. No Snippets are allowed.  No newlines or <ENTER> keypresses are allowed.
+The above example ensures that the full-screen editor will only accept a simple title.  No HTML is allowed. No Snippets are allowed.  No newlines or ENTER keypresses are allowed.
 
 This gives the user full control of the content, and allows the design and presentation to remain entirely in the hands of the developer.
 
