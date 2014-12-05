@@ -138,6 +138,65 @@ or allow full content entry, but only a subset of the available Snippets:
   = effective_region(:sidebar_mentions, :snippets => [:mention])
 ```
 
+### Before Save Callback
+
+Sometimes you may want to programmatically massage the content being assigned from the editor.
+
+One use case for this would be to replace a tweet `@someone` mention with a full url to the appropriate twitter page.
+
+Found in the `config/initializers/effective_regions.rb` file, the `config.before_save_method` hook exists for just such a purpose.
+
+This method is called when a User clicks the 'Save' button in the full screen editor.
+
+It will be called once for each region immediately before the regions are saved to the database.
+
+This is not an ActiveRecord `before_save` callback and there is no way to cancel the save.
+
+This method is run on the `controller.view_context`, so you have access to all your regular view helpers as well as the `request` object.
+
+The second argument, `parent`, will be the `Effective::Region`'s parent `regionable` object, or the symbol `:global`.
+
+If you are gsub'ing the `region.content` String value or altering the `region.snippets` Hash values, those changes will not be immediately visible on the front-end.
+
+If you need the User to immediately see these changes, have your Proc or function return the symbol `:refresh`.
+
+Returning the symbol `:refresh` will instruct javascript to perform a full page refresh after the Save is complete.
+
+Warning: Don't change the `region.title` value or the `region.regionable` parent object, as this will just orphan the region.
+
+Use via Proc:
+
+```ruby
+config.before_save_method = Proc.new do |region, parent|
+  region.content = region.content.gsub('force', 'horse') if region.title == 'body'
+  :refresh
+end
+```
+
+or to use via custom method:
+
+```ruby
+config.before_save_method = :my_region_before_save_method
+```
+
+And then in your application_controller.rb:
+
+```ruby
+def my_region_before_save_method(region, parent)
+  if region.title == 'body' && request.fullpath == posts_path
+    region.content = region.content.gsub('force', 'horse')
+    :refresh
+  end
+end
+```
+
+or to disable completely:
+
+```ruby
+config.before_save_method = false
+```
+
+
 ## Authorization
 
 All authorization checks are handled via the config.authorization_method found in the effective_regions.rb initializer.
