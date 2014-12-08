@@ -50,6 +50,18 @@ Do not add anything to your asset pipeline javascripts or stylesheets.
 
 ## Usage
 
+To start editting via the full-screen editor, prepend `/edit/` to your existing route.
+
+So to begin editing:
+
+`http://www.example.com/about` => `http://www.example.com/edit/about`
+
+`http://www.example.com/posts/13` => `http://www.example.com/edit/posts/13`
+
+`http://www.example.com/` => `http://www.example.com/edit/`
+
+of course, there will be nothing to edit until you insert some Regions.
+
 ### Regions
 
 Regions can be global, in which each is referenced by a unique name, or belong to a specific object.
