@@ -13,6 +13,7 @@ EffectiveRegions::Engine.routes.draw do
 
     scope '/edit' do  # Changing this, means changing the effective_ckeditor routes
       get '(*requested_uri)' => 'regions#edit', :as => :edit_effective_regions
+      get '(*requested_uri)' => 'regions#edit', :as => :edit
       put '(*requested_uri)' => 'regions#update', :as => :effective_regions
     end
   end

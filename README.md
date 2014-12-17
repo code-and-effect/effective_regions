@@ -62,6 +62,12 @@ So to begin editing:
 
 of course, there will be nothing to edit until you insert some Regions.
 
+You can also use the link_to helper to automatically prepend `/edit/`:
+
+```ruby
+= link_to 'Edit Post Content', effective_regions.edit_path(post_path(@post))
+```
+
 ### Regions
 
 Regions can be global, in which each is referenced by a unique name, or belong to a specific object.
