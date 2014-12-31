@@ -114,7 +114,20 @@ module Effective
       title = nil
 
       if(class_name, id, title = key.scan(/(\w+)_(\d+)_(\w+)/).flatten).present?
-        regionable = (class_name.classify.safe_constantize).find(id) rescue nil
+        # The problem here is that class_name could have a namespace prepended to it
+        klass = class_name.classify.safe_constantize
+
+        if klass == nil && (pieces = class_name.split('_')).length > 1
+          pieces.each_with_index do |piece, index|
+            potential_namespace = pieces[0..index].join('_')
+            potential_classname = (pieces.last(pieces.length-index-1).join('_') rescue '')
+
+            klass = "#{potential_namespace.classify}::#{potential_classname.classify}".safe_constantize
+            break if klass
+          end
+        end
+
+        regionable = (klass.find(id) rescue nil)
       end
 
       return regionable, (title || key)
