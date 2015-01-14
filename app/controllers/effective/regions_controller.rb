@@ -55,6 +55,11 @@ module Effective
           to_save.save!
         end
 
+        # Hand off the appropriate params to EffectivePages gem
+        if defined?(EffectivePages)
+          Effective::Menu.update_from_effective_regions!(params[:effective_menus])
+        end
+
         render :text => javascript_should_refresh_page, :status => 200
         return
       end
