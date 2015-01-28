@@ -27,7 +27,7 @@ module EffectiveRegionsHelper
   end
 
   def effectively_editting?
-    @effectively_editting ||= request.fullpath.include?('?edit=true')
+    @effectively_editting ||= request.fullpath.include?('edit=true')
   end
 
   private
