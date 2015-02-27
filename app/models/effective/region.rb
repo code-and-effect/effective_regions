@@ -2,7 +2,7 @@ module Effective
   class Region < ActiveRecord::Base
     self.table_name = EffectiveRegions.regions_table_name.to_s
 
-    belongs_to :regionable, :polymorphic => true
+    belongs_to :regionable, :polymorphic => true, :touch => true
 
     structure do
       title             :string, :validates => [:presence]
