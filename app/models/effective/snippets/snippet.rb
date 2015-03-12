@@ -12,9 +12,24 @@ module Effective
 
       # Each Snippet has to be a block (or inline) element with nested children.
       # It has to start with a root object
-
       # That root object has to do {snippet_data(snippet)}
 
+      # This is used by the effective_regions_helper effective_regions_include_tags
+      # And ends up in the javascript CKEDITOR.config['effective_regions'] top level namespace
+      def self.all(controller = nil)
+        {}.tap do |all_snippets|
+          EffectiveRegions.snippets.each do |snippet|
+            all_snippets[snippet.class_name] = {
+              :dialog_url => snippet.snippet_dialog_url,
+              :label => snippet.snippet_label,
+              :description => snippet.snippet_description,
+              :inline => snippet.snippet_inline,
+              :editables => snippet.snippet_editables,
+              :tag => snippet.snippet_tag.to_s
+            }
+          end
+        end
+      end
 
       def initialize(atts = {})
         (atts || {}).each { |k, v| self.send("#{k}=", v) if respond_to?("#{k}=") }
