@@ -1,3 +1,3 @@
 module EffectiveRegions
-  VERSION = '1.2.3'.freeze
+  VERSION = '1.4.0'.freeze
 end
