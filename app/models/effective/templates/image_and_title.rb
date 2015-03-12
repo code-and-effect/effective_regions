@@ -6,7 +6,7 @@ module Effective
       end
 
       def description
-        'yo, One main image with a title and text that surround the image.'
+        'One main image with a title and text that surround the image.'
       end
     end
   end
