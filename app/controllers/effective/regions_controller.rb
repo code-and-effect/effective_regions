@@ -18,7 +18,8 @@ module Effective
     end
 
     def update
-      javascript_should_refresh_page = ''
+      refresh_page = false
+      response = {}
 
       Effective::Region.transaction do
         (request.fullpath.slice!(0..4) rescue nil) if request.fullpath.to_s.starts_with?('/edit') # This is so the before_save_method can reference the real current page
@@ -48,19 +49,19 @@ module Effective
           (vals[:snippets] || []).each { |snippet, vals| region.snippets[snippet] = vals }
 
           # Last chance for a developer to make some changes here
-          if (run_before_save_method(region, regionable) rescue nil) == :refresh
-            javascript_should_refresh_page = 'refresh'
-          end
+          refresh_page = true if (run_before_save_method(region, regionable) rescue nil) == :refresh
 
           to_save.save!
         end
 
         # Hand off the appropriate params to EffectivePages gem
-        if defined?(EffectivePages)
+        if defined?(EffectivePages) && params[:effective_menus].present?
           Effective::Menu.update_from_effective_regions!(params[:effective_menus])
         end
 
-        render :text => javascript_should_refresh_page, :status => 200
+        response[:refresh] = true if refresh_page
+
+        render :json => response.to_json(), :status => 200
         return
       end
 
