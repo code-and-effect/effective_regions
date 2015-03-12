@@ -69,10 +69,10 @@ module EffectiveRegionsHelper
 
     if effectively_editting? && (can_edit && options[:editable] != false) # If we need the editable div
       content_tag(editable_tag, opts) do
-        region.try(:content).present? ? render_region(region, true) : ((capture(&block).strip.html_safe) if block_given?)
+        region.try(:content).present? ? render_region(region, true) : (yield if block_given?; nil)
       end
     else
-      region.try(:content).present? ? render_region(region, false) : ((capture(&block).strip.html_safe) if block_given?)
+      region.try(:content).present? ? render_region(region, false) : (yield if block_given?; nil)
     end
   end
 
