@@ -4,7 +4,7 @@ module Effective
     layout false
 
     before_filter :authenticate_user! if defined?(Devise)
-    skip_log_page_views :quiet => true, :only => [:snippet, :snippets, :templates] if defined?(EffectiveLogging)
+    skip_log_page_views :quiet => true, :only => [:snippet] if defined?(EffectiveLogging)
 
     skip_before_filter :verify_authenticity_token, :only => [:update]
 
@@ -67,25 +67,6 @@ module Effective
       render :text => 'error', :status => :unprocessable_entity
     end
 
-    def snippets
-      EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
-
-      retval = {}
-      EffectiveRegions.snippets.each do |snippet|
-        retval[snippet.class_name] = {
-          :dialog_url => snippet.snippet_dialog_url,
-          :label => snippet.snippet_label,
-          :description => snippet.snippet_description,
-          :inline => snippet.snippet_inline,
-          :editables => snippet.snippet_editables,
-          :tag => snippet.snippet_tag.to_s
-          #:template => ActionView::Base.new(ActionController::Base.view_paths, {}, ActionController::Base.new).render(:partial => snippet.to_partial_path, :object => snippet, :locals => {:snippet => snippet})
-        }
-      end
-
-      render :json => retval
-    end
-
     def snippet # This is a GET.  CKEDITOR passes us data, we need to render the non-editable content
       klass = "Effective::Snippets::#{region_params[:name].try(:classify)}".safe_constantize
 
@@ -95,21 +76,6 @@ module Effective
       else
         render :text => "Missing class Effective::Snippets::#{region_params[:name].try(:classify)}"
       end
-    end
-
-    def templates
-      EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
-
-      retval = EffectiveRegions.templates.map do |template|
-        {
-          :title => template.title,
-          :description => template.description,
-          :image => template.image || "#{template.class_name}.png",
-          :html => render_to_string(:partial => template.to_partial_path, :object => template, :locals => {:template => template})
-        }
-      end
-
-      render :json => retval
     end
 
     protected
