@@ -28,7 +28,10 @@ module EffectiveRegionsHelper
   end
 
   def effectively_editting?
-    @effectively_editting ||= request.fullpath.include?('edit=true')
+    @effectively_editting ||= (
+      request.fullpath.include?('edit=true') &&
+      (EffectiveRegions.authorized?(controller, :edit, Effective::Region.new()) rescue false)
+    )
   end
 
   private
