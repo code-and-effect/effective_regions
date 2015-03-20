@@ -27,11 +27,8 @@ module EffectiveRegionsHelper
         :templates => Effective::Templates::Template.all(controller)
       }
 
-      if defined?(EffectiveRoles)
+      if defined?(EffectivePages) && defined?(EffectiveRoles)
         payload[:roles] = EffectiveRoles.roles_collection(Effective::Menu.new(), current_user)
-      end
-
-      if defined?(EffectivePages)
         payload[:pages] = ([['', '']] + Effective::Page.order(:title).map { |page| [page.title, page.id] })
       end
 
