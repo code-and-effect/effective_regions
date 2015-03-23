@@ -82,14 +82,14 @@ It's super easy to add an effective_region into any regular view, anywhere you w
 
 The following is an example of a global region:
 
-```ruby
+```haml
 %h2 This is a header
 %p= effective_region :footer_left
 ```
 
 and another example of the same region with some default content:
 
-```ruby
+```haml
 %h2 This is a header
 %p
   = effective_region :footer_left do
@@ -101,7 +101,7 @@ Anywhere in your application, in any layout or view, refering to `:footer_left` 
 
 Effective Regions can also belong to a specific object:
 
-```ruby
+```haml
 %h2= effective_region(@event, :title)
 
 %p
@@ -212,6 +212,24 @@ or to disable completely:
 
 ```ruby
 config.before_save_method = false
+```
+
+## Helpers
+
+### effectively_editting?
+
+Call `effectively_editting?` in any controller or view to determine if the current action is in edit mode.
+
+This checks both that `request.fullpath.include?('edit=true')` and that the current_user has permission to use the editor.
+
+### The Exit button
+
+When a user clicks on the 'Exit' button from the full-screen editor toolbar, they are redirected to the last visited page.
+
+You can overide the default behaviour by passing an Exit URL as a parameter:
+
+```haml
+= link_to 'Edit Post Content', effective_regions.edit_path(post_path(@post), :exit => edit_admin_post_path(@post))
 ```
 
 
