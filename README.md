@@ -216,9 +216,9 @@ config.before_save_method = false
 
 ## Helpers
 
-### effectively_editting?
+### effectively_editing?
 
-Call `effectively_editting?` in any controller or view to determine if the current action is in edit mode.
+Call `effectively_editing?` in any controller or view to determine if the current action is in edit mode.
 
 This checks both that `request.fullpath.include?('edit=true')` and that the current_user has permission to use the editor.
 
