@@ -8,6 +8,7 @@ module EffectiveRegions
     initializer 'effective_regions.action_controller' do |app|
       ActiveSupport.on_load :action_controller do
         helper EffectiveRegionsHelper
+        ActionController::Base.send :include, ::EffectiveRegionsControllerHelper
       end
     end
 
