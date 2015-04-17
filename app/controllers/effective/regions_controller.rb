@@ -14,7 +14,9 @@ module Effective
       cookies['effective_regions_editting'] = {:value => params[:exit].presence || request.referrer, :path => '/'}
 
       # TODO: turn this into a cookie or something better.
-      redirect_to request.url.gsub('/edit', '') + '?edit=true'
+      uri =  URI.parse(request.url.sub('/edit', ''))
+      uri.query = [uri.query, "edit=true"].compact.join('&')
+      redirect_to uri.to_s
     end
 
     def update
