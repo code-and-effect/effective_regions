@@ -549,9 +549,7 @@ Templates are small pieces of reusable HTML that can be inserted into an `effect
 
 Unlike snippets, there are no configurable options or anything.  They're just pieces of raw HTML that can be dropped in and then immediately editted.
 
-While handy, they were implemented as a bit of an after-thought, and will probably be refactored in future versions of effective_regions.
-
-They take the form of two files, a model and a view.
+They take the form of three files, a model, a view, and an optional image file.
 
 ### The Model
 
@@ -586,6 +584,15 @@ The view is defined at app/models/effective/templates/_two_column.html.haml
   .col-sm-6
     %p Right column
 ```
+
+### The Image
+
+The image is used as an icon on the 'Content Templates' dialog screen.
+
+It is optional, but will raise a silent 404 error if it doesn't exist.
+
+The image should be 100x70 pixel .png file stored at /app/assets/images/effective/templates/two_column.png
+
 
 ## License
 
