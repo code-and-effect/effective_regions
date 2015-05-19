@@ -43,6 +43,7 @@ module EffectiveRegionsHelper
     obj = args.first
     title = args.last.to_s.parameterize
     editable_tag = options.delete(:editable_tag) || :div
+    snippet_locals = options.delete(:snippet_locals) # These get passed into the Snippet.new() model
 
     # Set up the editable div options we need to send to ckeditor
     if effectively_editing?
@@ -76,19 +77,19 @@ module EffectiveRegionsHelper
 
     if effectively_editing? && (can_edit && options[:editable] != false) # If we need the editable div
       content_tag(editable_tag, opts) do
-        region.try(:content).present? ? render_region(region, true) : (capture(&block) if block_given?)
+        region.try(:content).present? ? render_region(region, true, snippet_locals) : (capture(&block) if block_given?)
       end
     else
-      region.try(:content).present? ? render_region(region, false) : (capture(&block) if block_given?)
+      region.try(:content).present? ? render_region(region, false, snippet_locals) : (capture(&block) if block_given?)
     end
   end
 
-  def render_region(region, can_edit = true)
+  def render_region(region, can_edit = true, snippet_locals = {})
     return '' unless region
 
     region.content.tap do |html|
       html.scan(/\[(snippet_\d+)\]/).flatten.uniq.each do |id| # find snippet_1 and replace with snippet content
-        snippet = region.snippet_objects.find { |snippet| snippet.id == id }
+        snippet = region.snippet_objects(snippet_locals).find { |snippet| snippet.id == id }
         html.gsub!("[#{id}]", render_snippet(snippet, can_edit)) if snippet
       end
     end.html_safe

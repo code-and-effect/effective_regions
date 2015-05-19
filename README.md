@@ -424,10 +424,17 @@ module Effective
   module Snippets
     class Post < Snippet
       attribute :post_id, Integer
+      attribute :all_posts, Array # We're going to assign this through the effective_region :snippet_locals option
 
       def post_object
         # We're using ::Post to refer to the app/models/post.rb rather than the Effective::Snippets::Post
-        @post ||= ::Post.find_by_id(post_id)
+        @post ||= begin
+          if all_posts.present?
+            all_posts.find { |post| post.id == post_id }
+          else
+            ::Post.find_by_id(post_id)
+          end
+        end
       end
 
     end
@@ -532,11 +539,12 @@ We can pre-populate an effective_region's default content with some posts.  Thes
 ```haml
 %h2 Posts
 
-= snippet_effective_region :sidebar_posts, :snippets => [:post] do
+= snippet_effective_region :sidebar_posts, :snippets => [:post], :snippet_locals => {:all_posts => Post.all.to_a} do
   - Post.order(:created_at).first(5).each do |post|
-    = render_snippet Effective::Snippets::Post.new(:post_id => post.id)
+    = render_snippet Effective::Snippets::Post.new(:post_id => post.id, :all_posts => [post])
 ```
 
+Using the `snippet_locals` approach as above prevents an N+1 query when each snippet has to look up its own post.
 
 ### Summary
 

@@ -31,6 +31,10 @@ module Effective
         end
       end
 
+      # If you define "attribute :something, Array" in your derived class
+      # You can call effective_region post, :content :snippet_locals => {:something => [1,2,3]}
+      # And it will be assigned when the effective_region is rendered
+
       def initialize(atts = {})
         (atts || {}).each { |k, v| self.send("#{k}=", v) if respond_to?("#{k}=") }
       end
