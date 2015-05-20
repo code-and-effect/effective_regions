@@ -16,10 +16,10 @@ module Effective
 
       # This is used by the effective_regions_helper effective_regions_include_tags
       # And ends up in the javascript CKEDITOR.config['effective_regions'] top level namespace
-      def self.all(controller = nil)
-        {}.tap do |all_snippets|
+      def self.definitions(controller = nil)
+        {}.tap do |snippets|
           EffectiveRegions.snippets.each do |snippet|
-            all_snippets[snippet.class_name] = {
+            snippets[snippet.class_name] = {
               :dialog_url => snippet.snippet_dialog_url,
               :label => snippet.snippet_label,
               :description => snippet.snippet_description,

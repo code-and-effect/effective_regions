@@ -23,8 +23,8 @@ module EffectiveRegionsHelper
   def effective_regions_include_tags
     if effectively_editing?
       payload = {
-        :snippets => Effective::Snippets::Snippet.all(controller),
-        :templates => Effective::Templates::Template.all(controller)
+        :snippets => Effective::Snippets::Snippet.definitions(controller),
+        :templates => Effective::Templates::Template.definitions(controller)
       }
 
       if defined?(EffectivePages) && defined?(EffectiveRoles)

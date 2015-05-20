@@ -5,7 +5,7 @@ module Effective
       # This is used by the effective_regions_helper effective_regions_include_tags
       # And ends up in the javascript CKEDITOR.config['effective_regions'] top level namespace
       # Passing the controller is hacky but it works
-      def self.all(controller)
+      def self.definitions(controller)
         EffectiveRegions.templates.map do |template|
           {
             :title => template.title,
