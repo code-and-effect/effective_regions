@@ -15,6 +15,7 @@ module Effective
     serialize :snippets, HashWithIndifferentAccess
 
     scope :global, -> { where("#{EffectiveRegions.regions_table_name}.regionable_type IS NULL").where("#{EffectiveRegions.regions_table_name}.regionable_id IS NULL") }
+    scope :with_snippets, -> { where("#{EffectiveRegions.regions_table_name}.snippets ILIKE ?", '%snippet_%') }
 
     def snippets
       self[:snippets] || HashWithIndifferentAccess.new()

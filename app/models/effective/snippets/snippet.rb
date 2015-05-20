@@ -5,14 +5,38 @@ module Effective
     class Snippet
       include Virtus.model
 
-      attribute :id, String # This will be snippet_12345
-      attribute :region, Effective::Region # The region Object
-
       # SO I have to add some restrictions on how snippets are built:
 
       # Each Snippet has to be a block (or inline) element with nested children.
       # It has to start with a root object
       # That root object has to do {snippet_data(snippet)}
+
+      attribute :id, String # This will be snippet_12345
+      attribute :region, Effective::Region # The region Object
+
+      # This is going to return all snippet objects that are saved in any Effective::Regions
+      def self.all(type = nil)
+        if type.present?
+          name = case type
+          when Snippet
+            type.class_name.to_s
+          when Class
+            type.name.demodulize.underscore
+          when String
+            type.demodulize.underscore
+          else
+            raise 'Expected a class name, an instance of a snippet, or a string'
+          end.to_sym
+
+          Effective::Region.with_snippets
+            .where("#{EffectiveRegions.regions_table_name}.snippets ILIKE ?", "%class_name: #{name}%")
+            .map(&:snippet_objects)
+            .flatten
+            .select { |snippet| snippet.class_name == name }
+        else
+          Effective::Region.with_snippets.map(&:snippet_objects).flatten
+        end
+      end
 
       # This is used by the effective_regions_helper effective_regions_include_tags
       # And ends up in the javascript CKEDITOR.config['effective_regions'] top level namespace
