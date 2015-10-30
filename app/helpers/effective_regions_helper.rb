@@ -63,7 +63,7 @@ module EffectiveRegionsHelper
 
       if effectively_editing?
         can_edit = (EffectiveRegions.authorized?(controller, :update, obj) rescue false)
-        opts[:id] = [model_name_from_record_or_class(obj).param_key(), obj.id, title].join('_')
+        opts[:id] = [model_name_from_record_or_class(obj).param_key(), obj.to_param, title].join('_')
       end
     else # This is a global region
       regions = (@effective_regions_global ||= Effective::Region.global.to_a)
