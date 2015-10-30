@@ -1,5 +1,7 @@
-require "effective_regions/engine"
-require "effective_regions/version"
+require 'migrant'
+require 'virtus'
+require 'effective_ckeditor'
+require 'effective_regions/engine'
 
 module EffectiveRegions
   mattr_accessor :regions_table_name
