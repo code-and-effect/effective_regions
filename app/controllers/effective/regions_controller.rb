@@ -71,6 +71,8 @@ module Effective
     end
 
     def snippet # This is a GET.  CKEDITOR passes us data, we need to render the non-editable content
+      EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
+
       klass = "Effective::Snippets::#{region_params[:name].try(:classify)}".safe_constantize
 
       if klass.present?
