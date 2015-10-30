@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir["spec/**/*"]
 
   s.add_dependency "rails", [">= 3.2.0"]
-  s.add_dependency 'effective_ckeditor', '>= 1.5.1'
+  s.add_dependency 'effective_ckeditor', '>= 1.7.4'
   s.add_dependency "migrant"
   s.add_dependency "virtus"
 
