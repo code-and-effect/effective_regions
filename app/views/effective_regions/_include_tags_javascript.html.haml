@@ -1,2 +1,11 @@
 :javascript
+  var ckeditor_present = (((function() {try {return CKEDITOR.version; } catch (_error) {} })()) || '').length > 0;
+
+  var $head = $('head');
+
+  if (!ckeditor_present) {
+    $head.append("<script src='/assets/effective_ckeditor.js' />");
+    $head.append("<link href='/assets/effective_ckeditor.css' type='text/css', media='screen' rel='stylesheet'/>");
+  };
+
   CKEDITOR.config['effective_regions'] = #{payload.to_json()};

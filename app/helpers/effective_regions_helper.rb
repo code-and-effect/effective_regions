@@ -32,7 +32,6 @@ module EffectiveRegionsHelper
         payload[:pages] = ([['', '']] + Effective::Page.order(:title).map { |page| [page.title, page.id] })
       end
 
-      javascript_include_tag('effective_ckeditor') + stylesheet_link_tag('effective_ckeditor') +
       render(:partial => 'effective_regions/include_tags_javascript', :locals => {:payload => payload})
     end
   end
