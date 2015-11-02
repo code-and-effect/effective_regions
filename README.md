@@ -47,6 +47,26 @@ effective_regions_include_tags
 
 Do not add anything to your asset pipeline javascripts or stylesheets.
 
+### Optional Step
+
+(optional)
+
+When you intend to use the full screen editor quite a bit, it does load faster if you add the effective_ckeditor resources to the asset pipeline.
+
+It prevents 2 extra requests on page load, but increases your asset payload size by around 200kb.
+
+To add it to the asset pipeline, put the following to your application.js:
+
+```ruby
+//= require effective_ckeditor
+```
+
+and in your application.css, add:
+
+```ruby
+*= require effective_ckeditor
+```
+
 
 ## Usage
 
