@@ -1,4 +1,4 @@
-require 'migrant'
+require 'haml-rails'
 require 'virtus'
 require 'effective_ckeditor'
 require 'effective_regions/engine'

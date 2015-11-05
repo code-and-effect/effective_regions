@@ -4,18 +4,19 @@ module Effective
 
     belongs_to :regionable, :polymorphic => true
 
-    structure do
-      title             :string, :validates => [:presence]
-      content           :text
-      snippets          :text
-
-      timestamps
-    end
+    # structure do
+    #   title             :string
+    #   content           :text
+    #   snippets          :text
+    #   timestamps
+    # end
 
     serialize :snippets, HashWithIndifferentAccess
 
     scope :global, -> { where("#{EffectiveRegions.regions_table_name}.regionable_type IS NULL").where("#{EffectiveRegions.regions_table_name}.regionable_id IS NULL") }
     scope :with_snippets, -> { where("#{EffectiveRegions.regions_table_name}.snippets ILIKE ?", '%snippet_%') }
+
+    validates_presence_of :title
 
     def snippets
       self[:snippets] || HashWithIndifferentAccess.new()
