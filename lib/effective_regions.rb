@@ -2,6 +2,7 @@ require 'haml-rails'
 require 'virtus'
 require 'effective_ckeditor'
 require 'effective_regions/engine'
+require 'effective_regions/version'
 
 module EffectiveRegions
   mattr_accessor :regions_table_name
