@@ -58,7 +58,7 @@ module Effective
 
         # Hand off the appropriate params to EffectivePages gem
         if defined?(EffectivePages) && params[:effective_menus].present?
-          Effective::Menu.update_from_effective_regions!(params[:effective_menus])
+          Effective::Menu.update_from_effective_regions!(menu_params)
         end
 
         response[:refresh] = true if refresh_page
@@ -136,6 +136,14 @@ module Effective
         self.instance_exec(self, region, (regionable || :global), &EffectiveRegions.before_save_method)
       end
 
+    end
+
+    def menu_params
+      begin
+        params.require(:effective_menus).permit!
+      rescue => e
+        params[:effective_menus]
+      end
     end
 
   end
