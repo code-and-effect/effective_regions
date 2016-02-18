@@ -19,6 +19,11 @@ module ActsAsRegionable
     true
   end
 
+  def region(title)
+    title = title.to_s
+    regions.to_a.find { |region| region.title == title } || regions.build(title: title)
+  end
+
   def snippet_objects(klass = nil)
     objs = regions.map { |region| region.snippet_objects }.flatten
 
