@@ -30,11 +30,10 @@ module Effective
 
           Effective::Region.with_snippets
             .where("#{EffectiveRegions.regions_table_name}.snippets ILIKE ?", "%class_name: #{name}%")
-            .map(&:snippet_objects)
-            .flatten
+            .flat_map { |region| region.snippet_objects }
             .select { |snippet| snippet.class_name == name }
         else
-          Effective::Region.with_snippets.map(&:snippet_objects).flatten
+          Effective::Region.with_snippets.flat_map { |region| region.snippet_objects }
         end
       end
 
