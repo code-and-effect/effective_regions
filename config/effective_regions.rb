@@ -67,5 +67,4 @@ EffectiveRegions.setup do |config|
   # config.before_save_method = false
 
   config.before_save_method = false
-
 end

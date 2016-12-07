@@ -21,7 +21,7 @@ module EffectiveRegions
 
     # Set up our default configuration options.
     initializer "effective_regions.defaults", :before => :load_config_initializers do |app|
-      eval File.read("#{config.root}/lib/generators/templates/effective_regions.rb")
+      eval File.read("#{config.root}/config/effective_regions.rb")
     end
 
   end
