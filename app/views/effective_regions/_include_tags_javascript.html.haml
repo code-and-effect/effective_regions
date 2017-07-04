@@ -8,4 +8,4 @@
     $head.append("<link href='/assets/effective_ckeditor.css' type='text/css', media='screen' rel='stylesheet'/>");
   };
 
-  CKEDITOR.config['effective_regions'] = #{payload.to_json()};
+  CKEDITOR.config['effective_regions'] = #{raw(payload.to_json())};
