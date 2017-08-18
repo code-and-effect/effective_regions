@@ -4,8 +4,8 @@
   var $head = $('head');
 
   if (!ckeditor_present) {
-    $head.append("<script src='/assets/effective_ckeditor.js' />");
-    $head.append("<link href='/assets/effective_ckeditor.css' type='text/css', media='screen' rel='stylesheet'/>");
+    $head.append("<script src='#{asset_path('effective_ckeditor.js')}' />");
+    $head.append("<link href='#{asset_path('effective_ckeditor.css')}' type='text/css', media='screen' rel='stylesheet'/>");
   };
 
   CKEDITOR.config['effective_regions'] = #{raw(payload.to_json())};
