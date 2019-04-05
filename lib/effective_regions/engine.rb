@@ -23,5 +23,9 @@ module EffectiveRegions
       eval File.read("#{config.root}/config/effective_regions.rb")
     end
 
+    initializer "effective_regions.append_precompiled_assets" do |app|
+      Rails.application.config.assets.precompile += ['ck_assets.js', 'ck_assets.css']
+    end
+
   end
 end

@@ -1,5 +1,6 @@
 EffectiveRegions.setup do |config|
   config.regions_table_name = :regions
+  config.ck_assets_table_name = :ck_assets
 
   # Authorization Method
   #

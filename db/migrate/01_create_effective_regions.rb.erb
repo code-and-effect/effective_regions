@@ -12,6 +12,13 @@ class CreateEffectiveRegions < ActiveRecord::Migration[4.2]
       t.datetime :created_at
     end
 
+    create_table <%= @ck_assets_table_name %> do |t|
+      t.boolean :global, default: false
+
+      t.datetime :updated_at
+      t.datetime :created_at
+    end
+
     add_index <%= @regions_table_name %>, [:regionable_type, :regionable_id]
     add_index <%= @regions_table_name %>, :regionable_id
   end
