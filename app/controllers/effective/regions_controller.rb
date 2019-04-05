@@ -14,7 +14,7 @@ module Effective
     skip_log_page_views quiet: true, only: [:snippet] if defined?(EffectiveLogging)
 
     def edit
-      EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
+      EffectiveRegions.authorize!(self, :edit, Effective::Region.new)
 
       cookies['effective_regions_editting'] = {:value => params[:exit].presence || request.referrer, :path => '/'}
 
@@ -76,7 +76,7 @@ module Effective
     end
 
     def snippet # This is a GET.  CKEDITOR passes us data, we need to render the non-editable content
-      EffectiveRegions.authorized?(self, :edit, Effective::Region.new())
+      EffectiveRegions.authorize!(self, :edit, Effective::Region.new)
 
       klass = "Effective::Snippets::#{region_params[:name].try(:classify)}".safe_constantize
 

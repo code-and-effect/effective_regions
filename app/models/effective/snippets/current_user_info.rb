@@ -1,7 +1,10 @@
 module Effective
   module Snippets
     class CurrentUserInfo < Snippet
-      attribute :method, String
+
+      def snippet_attributes
+        super + [:method]
+      end
 
       def snippet_tag
         :span

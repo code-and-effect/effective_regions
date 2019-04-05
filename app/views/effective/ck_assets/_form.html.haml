@@ -1,0 +1,7 @@
+= effective_form_with(model: ck_asset, url: effective_regions.ck_asset_path(ck_asset), remote: true) do |f|
+  = f.hidden_field :id
+
+  = f.file_field :files, label: 'Upload file', attachments_style: :ck_assets, click_submit: true
+
+  = f.save 'Save', style: 'display: none;'
+
