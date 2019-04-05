@@ -1,18 +1,17 @@
-require 'virtus'
-
 module Effective
   module Snippets
     class Snippet
-      include Virtus.model
-
       # SO I have to add some restrictions on how snippets are built:
 
       # Each Snippet has to be a block (or inline) element with nested children.
       # It has to start with a root object
       # That root object has to do {snippet_data(snippet)}
+      #attr_accessor :id       # This will be snippet_12345
+      #attr_accessor :region   # The region Object
 
-      attribute :id, String # This will be snippet_12345
-      attribute :region, Effective::Region # The region Object
+      def snippet_attributes
+        [:id, :region]
+      end
 
       # This is going to return all snippet objects that are saved in any Effective::Regions
       def self.all(type = nil)
@@ -59,15 +58,20 @@ module Effective
       # And it will be assigned when the effective_region is rendered
 
       def initialize(atts = {})
+        snippet_attributes.each { |name| self.class.send(:attr_accessor, name) }
         (atts || {}).each { |k, v| self.send("#{k}=", v) if respond_to?("#{k}=") }
       end
 
       def id
-        super.presence || "snippet_#{object_id}"
+        @id || "snippet_#{object_id}"
+      end
+
+      def region
+        @region || Effective::Region.new
       end
 
       def data
-        self.attributes.reject { |k, v| [:region, :id].include?(k) }
+        (self.snippet_attributes - [:region, :id]).inject({}) { |h, name| h[name] = public_send(name); h}
       end
 
       def to_partial_path

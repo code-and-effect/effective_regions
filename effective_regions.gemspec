@@ -18,5 +18,4 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", [">= 3.2.0"]
   s.add_dependency 'effective_ckeditor'
-  s.add_dependency 'virtus'
 end

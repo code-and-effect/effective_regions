@@ -1,4 +1,3 @@
-require 'virtus'
 require 'effective_ckeditor'
 require 'effective_regions/engine'
 require 'effective_regions/version'
