@@ -12,6 +12,9 @@ class CreateEffectiveRegions < ActiveRecord::Migration[4.2]
       t.datetime :created_at
     end
 
+    add_index <%= @regions_table_name %>, [:regionable_type, :regionable_id]
+    add_index <%= @regions_table_name %>, :regionable_id
+
     create_table <%= @ck_assets_table_name %> do |t|
       t.boolean :global, default: false
 
@@ -19,12 +22,11 @@ class CreateEffectiveRegions < ActiveRecord::Migration[4.2]
       t.datetime :created_at
     end
 
-    add_index <%= @regions_table_name %>, [:regionable_type, :regionable_id]
-    add_index <%= @regions_table_name %>, :regionable_id
   end
 
   def self.down
     drop_table <%= @regions_table_name %>
+    drop_table <%= @ck_assets_table_name %>
   end
 
 end
