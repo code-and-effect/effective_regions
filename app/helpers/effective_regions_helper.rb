@@ -28,8 +28,10 @@ module EffectiveRegionsHelper
       }
 
       if defined?(EffectivePages) && defined?(EffectiveRoles)
-        payload[:roles] = EffectiveRoles.roles_collection(Effective::Menu.new(), current_user)
-        payload[:pages] = ([['', '']] + Effective::Page.order(:title).map { |page| [page.title, page.id] })
+        if(menu = Effective::Menu.new()).respond_to?(:is_role_restricted?)
+          payload[:roles] = EffectiveRoles.roles_collection(menu, current_user)
+          payload[:pages] = ([['', '']] + Effective::Page.order(:title).map { |page| [page.title, page.id] })
+        end
       end
 
       render(:partial => 'effective_regions/include_tags_javascript', :locals => {:payload => payload})
