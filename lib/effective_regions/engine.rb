@@ -24,7 +24,7 @@ module EffectiveRegions
     end
 
     initializer "effective_regions.append_precompiled_assets" do |app|
-      Rails.application.config.assets.precompile += ['ck_assets.js', 'ck_assets.css']
+      Rails.application.config.assets.precompile += ['ck_assets.js', 'ck_assets.css', 'drop_cap.css']
     end
 
   end
