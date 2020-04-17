@@ -1,7 +1,7 @@
 module ActsAsRegionable
   extend ActiveSupport::Concern
 
-  module ActiveRecord
+  module Base
     def acts_as_regionable(*options)
       @acts_as_regionable_opts = options || []
       include ::ActsAsRegionable

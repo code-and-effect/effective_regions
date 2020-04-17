@@ -14,7 +14,7 @@ module EffectiveRegions
     # Include acts_as_addressable concern and allow any ActiveRecord object to call it
     initializer 'effective_regions.active_record' do |app|
       ActiveSupport.on_load :active_record do
-        ActiveRecord::Base.extend(ActsAsRegionable::ActiveRecord)
+        ActiveRecord::Base.extend(ActsAsRegionable::Base)
       end
     end
 
