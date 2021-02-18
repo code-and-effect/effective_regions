@@ -21,6 +21,7 @@ module EffectiveRegions
 
       def create_migration_file
         @regions_table_name = ':' + EffectiveRegions.regions_table_name.to_s
+        @ck_assets_table_name = : + EffectiveRegions.ck_assets_table_name.to_s
         migration_template ('../' * 3) + 'db/migrate/01_create_effective_regions.rb.erb', 'db/migrate/create_effective_regions.rb'
       end
     end
