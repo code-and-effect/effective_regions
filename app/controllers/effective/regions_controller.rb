@@ -3,24 +3,20 @@ module Effective
     respond_to :html, :json
     layout false
 
-    if respond_to?(:before_action)
-      skip_before_action :verify_authenticity_token, only: :update
-      before_action :authenticate_user! if defined?(Devise)
-    else
-      skip_before_filter :verify_authenticity_token, only: :update
-      before_filter :authenticate_user! if defined?(Devise)
-    end
+    skip_before_action :verify_authenticity_token, only: :update
+    before_action(:authenticate_user!) if defined?(Devise)
 
-    skip_log_page_views quiet: true, only: [:snippet] if defined?(EffectiveLogging)
+    skip_log_page_views(quiet: true, only: [:snippet]) if defined?(EffectiveLogging)
 
     def edit
-      EffectiveRegions.authorize!(self, :edit, Effective::Region.new)
+      EffectiveResources.authorize!(self, :edit, Effective::Region.new)
 
       cookies['effective_regions_editting'] = {:value => params[:exit].presence || request.referrer, :path => '/'}
 
       # TODO: turn this into a cookie or something better.
       uri = URI.parse(Rack::Utils.unescape(request.url.sub('/edit', '')))
       uri.query = [uri.query, "edit=true"].compact.join('&')
+
       redirect_to uri.to_s
     end
 
@@ -37,15 +33,15 @@ module Effective
           regionable, title = find_regionable(key)
 
           if regionable
-            EffectiveRegions.authorized?(self, :update, regionable) # can I update the regionable object?
+            EffectiveResources.authorized?(self, :update, regionable) # can I update the regionable object?
 
             region = regionable.regions.find { |region| region.title == title }
-            region ||= regionable.regions.build(:title => title)
+            region ||= regionable.regions.build(title: title)
 
             to_save = regionable
           else
-            region = Effective::Region.global.where(:title => title).first_or_initialize
-            EffectiveRegions.authorized?(self, :update, region) # can I update the global region?
+            region = Effective::Region.global.where(title: title).first_or_initialize
+            EffectiveResources.authorized?(self, :update, region) # can I update the global region?
 
             to_save = region
           end
@@ -68,15 +64,15 @@ module Effective
 
         response[:refresh] = true if refresh_page
 
-        render :json => response.to_json(), :status => 200
+        render(json: response.to_json(), status: 200)
         return
       end
 
-      render :text => 'error', :status => :unprocessable_entity
+      render(text: 'error', status: :unprocessable_entity)
     end
 
     def snippet # This is a GET.  CKEDITOR passes us data, we need to render the non-editable content
-      EffectiveRegions.authorize!(self, :edit, Effective::Region.new)
+      EffectiveResources.authorize!(self, :edit, Effective::Region.new)
 
       klass = "Effective::Snippets::#{region_params[:name].try(:classify)}".safe_constantize
 
@@ -153,4 +149,3 @@ module Effective
 
   end
 end
-

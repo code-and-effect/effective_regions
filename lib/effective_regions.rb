@@ -1,34 +1,15 @@
+require 'effective_resources'
 require 'effective_ckeditor'
 require 'effective_regions/engine'
 require 'effective_regions/version'
 
 module EffectiveRegions
-  mattr_accessor :regions_table_name
-  mattr_accessor :ck_assets_table_name
 
-  mattr_accessor :authorization_method
-  mattr_accessor :before_save_method
-
-  def self.setup
-    yield self
+  def self.config_keys
+    [:regions_table_name, :ck_assets_table_name, :before_save_method]
   end
 
-  def self.authorized?(controller, action, resource)
-    @_exceptions ||= [Effective::AccessDenied, (CanCan::AccessDenied if defined?(CanCan)), (Pundit::NotAuthorizedError if defined?(Pundit))].compact
-
-    return !!authorization_method unless authorization_method.respond_to?(:call)
-    controller = controller.controller if controller.respond_to?(:controller)
-
-    begin
-      !!(controller || self).instance_exec((controller || self), action, resource, &authorization_method)
-    rescue *@_exceptions
-      false
-    end
-  end
-
-  def self.authorize!(controller, action, resource)
-    raise Effective::AccessDenied.new('Access Denied', action, resource) unless authorized?(controller, action, resource)
-  end
+  include EffectiveGem
 
   # Returns a Snippet.new() for every class in the /app/effective/snippets/* directory
   def self.snippets

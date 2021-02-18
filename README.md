@@ -252,36 +252,14 @@ You can overide the default behaviour by passing an Exit URL as a parameter:
 = link_to 'Edit Post Content', effective_regions.edit_path(post_path(@post), :exit => edit_admin_post_path(@post))
 ```
 
-
 ## Authorization
 
-All authorization checks are handled via the config.authorization_method found in the effective_regions.rb initializer.
+All authorization checks are handled through the
+[effective_resources](https://github.com/code-and-effect/effective_resources/)
+gem and its `config.authorization_method` found in
+the `config/initializers/effective_resources.rb` initializer.
 
-It is intended for flow through to CanCan, but that is not required.
-
-The authorization method can be defined as:
-
-```ruby
-EffectiveRegions.setup do |config|
-  config.authorization_method = Proc.new { |controller, action, resource| can?(action, resource) }
-end
-```
-
-or as a method:
-
-```ruby
-EffectiveRegions.setup do |config|
-  config.authorization_method = :authorize_effective_regions
-end
-```
-
-and then in your application_controller.rb:
-
-```ruby
-def authorize_effective_regions(action, resource)
-  can?(action, resource)
-end
-```
+## Permissions
 
 There are 3 different levels of permissions to be considered:
 
@@ -296,19 +274,6 @@ can :update, Effective::Region
 3 - Can I update the individual objects which define `acts_as_regionable`
 
 can :update, ActsAsRegionableObject  # This would be your Event, Post, or Page, or whatever.
-
-If the method or proc returns false (user is not authorized) an `Effective::AccessDenied` exception will be raised
-
-You can rescue from this exception by adding the following to your application_controller.rb
-
-```ruby
-rescue_from Effective::AccessDenied do |exception|
-  respond_to do |format|
-    format.html { render 'static_pages/access_denied', :status => 403 }
-    format.any { render :text => 'Access Denied', :status => 403 }
-  end
-end
-```
 
 ## Snippets
 
@@ -633,13 +598,6 @@ Code and Effect is the product arm of [AgileStyle](http://www.agilestyle.com/), 
 
 The test suite for this gem is unfortunately not yet complete.
 
-Run tests by:
-
-```ruby
-rake spec
-```
-
-
 ## Contributing
 
 1. Fork it
@@ -648,4 +606,3 @@ rake spec
 4. Push to the branch (`git push origin my-new-feature`)
 5. Bonus points for test coverage
 6. Create new Pull Request
-

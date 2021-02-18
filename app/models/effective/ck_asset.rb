@@ -11,15 +11,12 @@ module Effective
     # The instance ones will have just one file
     has_one_attached :file
 
-    # Attributes
-    # global     :boolean
+    effective_resource do
+      global :boolean
+    end
 
     def self.global
       CkAsset.where(global: true).first || CkAsset.create!(global: true)
     end
   end
 end
-
-
-
-

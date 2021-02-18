@@ -63,7 +63,7 @@ module EffectiveRegionsHelper
       region = obj.regions.find { |region| region.title == title }
 
       if effectively_editing?
-        can_edit = (EffectiveRegions.authorized?(controller, :update, obj) rescue false)
+        can_edit = EffectiveResources.authorized?(controller, :update, obj)
         opts[:id] = [model_name_from_record_or_class(obj).param_key(), obj.id, title].join('_')
       end
     else # This is a global region
@@ -71,7 +71,7 @@ module EffectiveRegionsHelper
       region = regions.find { |region| region.title == title } || Effective::Region.new(:title => title)
 
       if effectively_editing?
-        can_edit = (EffectiveRegions.authorized?(controller, :update, region) rescue false)
+        can_edit = EffectiveResources.authorized?(controller, :update, region)
         opts[:id] = title.to_s.parameterize
       end
     end
@@ -111,7 +111,5 @@ module EffectiveRegionsHelper
       content
     end.html_safe
   end
-
-
 
 end
