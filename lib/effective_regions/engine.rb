@@ -6,7 +6,9 @@ module EffectiveRegions
 
     # Include Helpers to base application
     initializer 'effective_regions.action_controller' do |app|
-      ActiveSupport.on_load :action_controller do
+      ActiveSupport.on_load :action_controller_base do
+        helper EffectiveRegionsHelper
+
         ActionController::Base.send(:include, ::EffectiveRegionsControllerHelper)
       end
     end
@@ -24,7 +26,7 @@ module EffectiveRegions
     end
 
     initializer "effective_regions.append_precompiled_assets" do |app|
-      Rails.application.config.assets.precompile += ['ck_assets.js', 'ck_assets.css', 'drop_cap.css']
+      app.config.assets.precompile += ['effective_regions_manifest.js', 'ck_assets.js', 'ck_assets.css', 'drop_cap.css']
     end
 
   end

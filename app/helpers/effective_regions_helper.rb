@@ -38,8 +38,6 @@ module EffectiveRegionsHelper
     end
   end
 
-  private
-
   def ckeditor_region(args, options = {}, &block)
     obj = args.first
     title = args.last.to_s.parameterize
