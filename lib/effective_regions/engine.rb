@@ -6,17 +6,21 @@ module EffectiveRegions
 
     # Include Helpers to base application
     initializer 'effective_regions.action_controller' do |app|
-      ActiveSupport.on_load :action_controller_base do
-        helper EffectiveRegionsHelper
+      app.config.to_prepare do
+        ActiveSupport.on_load :action_controller_base do
+          helper EffectiveRegionsHelper
 
-        ActionController::Base.send(:include, ::EffectiveRegionsControllerHelper)
+          ActionController::Base.send(:include, ::EffectiveRegionsControllerHelper)
+        end
       end
     end
 
     # Include acts_as_addressable concern and allow any ActiveRecord object to call it
     initializer 'effective_regions.active_record' do |app|
-      ActiveSupport.on_load :active_record do
-        ActiveRecord::Base.extend(ActsAsRegionable::Base)
+      app.config.to_prepare do
+        ActiveSupport.on_load :active_record do
+          ActiveRecord::Base.extend(ActsAsRegionable::Base)
+        end
       end
     end
 
