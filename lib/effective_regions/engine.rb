@@ -3,6 +3,7 @@ module EffectiveRegions
     engine_name 'effective_regions'
 
     config.autoload_paths += Dir["#{config.root}/app/models/concerns"]
+    config.autoload_paths += Dir["#{config.root}/app/models/effective/snippets"]
 
     # Include Helpers to base application
     initializer 'effective_regions.action_controller' do |app|
