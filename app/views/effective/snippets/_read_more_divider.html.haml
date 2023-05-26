@@ -1,0 +1,6 @@
+- if effectively_editting?
+  %p.show-block-adjust{:style => 'border-top: 2px dashed black; text-align: center;', :title => 'anything above this line will be treated as excerpt content'}
+    %span{:style => 'background: #ddd; display: inline-block; padding: 0px 6px 4px 6px; border-radius: 0px 0px 10px 10px;'}
+      Read more...
+- else
+  = Effective::Snippets::ReadMoreDivider::TOKEN.html_safe

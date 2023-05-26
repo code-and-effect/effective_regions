@@ -23,6 +23,7 @@ module Effective
     def update
       refresh_page = false
       response = {}
+      success = false
 
       Effective::Region.transaction do
         (request.fullpath.slice!(0..4) rescue nil) if request.fullpath.to_s.starts_with?('/edit') # This is so the before_save_method can reference the real current page
@@ -64,11 +65,15 @@ module Effective
 
         response[:refresh] = true if refresh_page
 
-        render(json: response.to_json(), status: 200)
-        return
+        success = true
       end
 
-      render(text: 'error', status: :unprocessable_entity)
+      if success
+        render(json: response.to_json(), status: 200)
+      else
+        render(text: 'error', status: :unprocessable_entity)
+      end
+
     end
 
     def snippet # This is a GET.  CKEDITOR passes us data, we need to render the non-editable content
