@@ -12,7 +12,11 @@ module Effective
       timestamps
     end
 
-    serialize :snippets, HashWithIndifferentAccess
+    if EffectiveResources.serialize_with_coder?
+      serialize :snippets, type: HashWithIndifferentAccess, coder: YAML
+    else
+      serialize :snippets, HashWithIndifferentAccess
+    end
 
     scope :global, -> { where("#{EffectiveRegions.regions_table_name}.regionable_type IS NULL").where("#{EffectiveRegions.regions_table_name}.regionable_id IS NULL") }
     scope :with_snippets, -> { where("#{EffectiveRegions.regions_table_name}.snippets ILIKE ?", '%snippet_%') }
